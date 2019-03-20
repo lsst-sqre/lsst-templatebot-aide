@@ -8,7 +8,7 @@ test:
 
 .PHONY: dev
 dev:
-	adev runserver --app-factory create_app templatebotaide/app.py
+	adev runserver --app-factory create_app templatebotaide/app.py --port 8085
 
 .PHONY: image
 image:
