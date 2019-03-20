@@ -12,6 +12,7 @@ import structlog
 from .config import create_config
 from .routes import init_root_routes, init_routes
 from .middleware import setup_middleware
+from .events.router import consume_events
 
 
 def create_app():
@@ -27,6 +28,8 @@ def create_app():
     root_app.update(config)
     root_app.add_routes(init_root_routes())
     root_app.cleanup_ctx.append(init_http_session)
+    root_app.on_startup.append(start_events_listener)
+    root_app.on_cleanup.append(stop_events_listener)
 
     # Create sub-app for the app's public APIs at the correct prefix
     prefix = '/' + root_app['api.lsst.codes/name']
@@ -115,3 +118,19 @@ async def init_http_session(app):
 
     # Cleanup phase
     await app['api.lsst.codes/httpSession'].close()
+
+
+async def start_events_listener(app):
+    """Start the Kafka consumer for templatebot events as a background task
+    (``on_startup`` signal handler).
+    """
+    app['templatebot-aide/events_consumer_task'] = app.loop.create_task(
+        consume_events(app))
+
+
+async def stop_events_listener(app):
+    """Stop the Kafka consumer for templatebot events (``on_cleanup`` signal
+    handler).
+    """
+    app['templatebot-aide/events_consumer_task'].cancel()
+    await app['templatebot-aide/events_consumer_task']

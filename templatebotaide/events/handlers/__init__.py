@@ -1,0 +1,1 @@
+from .genericprerender import handle_generic_prerender
