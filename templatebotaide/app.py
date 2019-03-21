@@ -10,6 +10,8 @@ import sys
 from aiohttp import web, ClientSession
 from aiokafka import AIOKafkaProducer
 import structlog
+from gidgethub.aiohttp import GitHubAPI
+import cachetools
 
 from .config import create_config
 from .routes import init_root_routes, init_routes
@@ -30,6 +32,7 @@ def create_app():
     root_app.update(config)
     root_app.add_routes(init_root_routes())
     root_app.cleanup_ctx.append(init_http_session)
+    root_app.cleanup_ctx.append(init_gidgethub_session)
     root_app.cleanup_ctx.append(init_producer)
     root_app.on_startup.append(start_events_listener)
     root_app.on_cleanup.append(stop_events_listener)
@@ -121,6 +124,27 @@ async def init_http_session(app):
 
     # Cleanup phase
     await app['api.lsst.codes/httpSession'].close()
+
+
+async def init_gidgethub_session(app):
+    """Create a Gidgethub client session to access the GitHub api.
+
+    Notes
+    -----
+    Use this function as a cleanup content.
+
+    Access the client as ``app['templatebot-aide/gidgethub']``.
+    """
+    session = app['api.lsst.codes/httpSession']
+    token = app['templatebot-aide/githubToken']
+    username = app['templatebot-aide/githubUsername']
+    cache = cachetools.LRUCache(maxsize=500)
+    gh = GitHubAPI(session, username, oauth_token=token, cache=cache)
+    app['templatebot-aide/gidgethub'] = gh
+
+    yield
+
+    # No cleanup to do
 
 
 async def start_events_listener(app):
