@@ -61,4 +61,8 @@ def create_config():
     c['templatebot-aide/topicsVersion'] = \
         os.getenv('TEMPLATEBOT_TOPICS_VERSION') or ''
 
+    # GitHub token for SQuaRE bot
+    c['templatebot-aide/githubToken'] = os.getenv('GITHUB_TOKEN')
+    c['templatebot-aide/githubUsername'] = os.getenv('GITHUB_USER')
+
     return c
