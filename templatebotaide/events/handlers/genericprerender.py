@@ -5,6 +5,7 @@ import datetime
 import gidgethub
 
 from templatebotaide.github import create_repo
+from templatebotaide.slack import post_message
 
 
 async def handle_generic_prerender(*, event, schema, app, logger):
@@ -57,7 +58,27 @@ async def handle_generic_prerender(*, event, schema, app, logger):
         )
     except gidgethub.GitHubException:
         logger.exception('Error creating the GitHub repository')
-        # TODO send a threaded Slack message back to the user if appropriate
+        # Send a threaded Slack message back to the user if appropriate
+        if event['slack_username'] is not None:
+            await post_message(
+                text=f"<@{event['slack_username']}>, oh no! "
+                     ":slightly_frowning_face:, something went wrong when "
+                     "I tried to create a GitHub repo.\n\n"
+                     "I can't do anything to fix it. Could you ask someone at "
+                     "SQuaRE to look into it?",
+                channel=event['slack_channel'],
+                thread_ts=event['slack_thread_ts'],
+                logger=logger,
+                app=app
+            )
+            await post_message(
+                text="This is the repo URL I tried: "
+                     f"`{repo_info['html_url']}`.",
+                channel=event['slack_channel'],
+                thread_ts=event['slack_thread_ts'],
+                logger=logger,
+                app=app
+            )
         raise
 
     logger.info('Created repo', repo_info=repo_info)
