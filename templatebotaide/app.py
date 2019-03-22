@@ -12,6 +12,8 @@ from aiokafka import AIOKafkaProducer
 import structlog
 from gidgethub.aiohttp import GitHubAPI
 import cachetools
+from kafkit.registry.aiohttp import RegistryApi
+from kafkit.registry import Serializer
 
 from .config import create_config
 from .routes import init_root_routes, init_routes
@@ -34,6 +36,7 @@ def create_app():
     root_app.cleanup_ctx.append(init_http_session)
     root_app.cleanup_ctx.append(init_gidgethub_session)
     root_app.cleanup_ctx.append(init_producer)
+    root_app.cleanup_ctx.append(init_avro_serializer)
     root_app.on_startup.append(start_events_listener)
     root_app.on_cleanup.append(stop_events_listener)
 
@@ -193,3 +196,43 @@ async def init_producer(app):
     # cleanup phase
     logger.info('Shutting down Kafka producer')
     await producer.stop()
+
+
+async def init_avro_serializer(app):
+    """Initialize the Avro serializer for templatebot-render_ready messages.
+
+    Access the serializer as::
+
+        app['templatebot-aide/renderreadySerializer']
+
+    Access the templatebot-render_ready topic name (including staging version
+    suffix) as::
+
+        app['templatebot-aide/renderreadyTopic'] = topic_name
+    """
+    logger = structlog.get_logger(app['api.lsst.codes/loggerName'])
+    logger.info('Starting Kafka producer')
+
+    subject = 'templatebot.render_ready_v1'
+    topic_name = 'templatebot-render_ready'
+    if app['templatebot-aide/topicsVersion']:
+        v = app['templatebot-aide/topicsVersion']
+        subject = f'{subject}_{v}'
+        topic_name = f'{topic_name}-{v}'
+
+    logger.debug('Subject name', name=subject)
+    logger.debug('Topic name', name=topic_name)
+
+    registry = RegistryApi(
+        session=app['api.lsst.codes/httpSession'],
+        url=app['templatebot-aide/registryUrl'])
+    schema_info = await registry.get_schema_by_subject(
+        subject, version='latest')
+    serializer = Serializer(
+        schema=schema_info['schema'],
+        schema_id=schema_info['id'])
+
+    app['templatebot-aide/renderreadySerializer'] = serializer
+    app['templatebot-aide/renderreadyTopic'] = topic_name
+
+    yield
