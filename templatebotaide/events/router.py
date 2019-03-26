@@ -7,7 +7,16 @@ from kafkit.registry.aiohttp import RegistryApi
 from kafkit.registry import Deserializer
 import structlog
 
-from .handlers import handle_generic_prerender
+from .handlers import handle_generic_prerender, handle_technote_prerender
+
+
+TECHNOTE_TEMPLATES = ('technote_rst')
+"""Names of templates in https://github.com/lsst/templates that correspond to
+technical notes.
+
+Technical notes have a special process for assigning document handles through
+GitHub repository names in a given organization.
+"""
 
 
 async def consume_events(app):
@@ -121,8 +130,16 @@ async def route_event(*, event, app, schema_id, schema, topic, partition,
     )
 
     if topic == app['templatebot-aide/prerenderTopic']:
-        await handle_generic_prerender(
-            event=event,
-            schema=schema,
-            app=app,
-            logger=logger)
+        if event['template_name'] in TECHNOTE_TEMPLATES:
+            # Technote-type project
+            await handle_technote_prerender(
+                event=event,
+                schema=schema,
+                app=app,
+                logger=logger)
+        else:
+            await handle_generic_prerender(
+                event=event,
+                schema=schema,
+                app=app,
+                logger=logger)

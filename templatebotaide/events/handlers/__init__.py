@@ -1,1 +1,2 @@
 from .genericprerender import handle_generic_prerender
+from .technoteprerender import handle_technote_prerender
