@@ -65,4 +65,10 @@ def create_config():
     c['templatebot-aide/githubToken'] = os.getenv('TEMPLATEBOT_GITHUB_TOKEN')
     c['templatebot-aide/githubUsername'] = os.getenv('TEMPLATEBOT_GITHUB_USER')
 
+    # Travis CI tokens for both .com and .org APIs
+    c['templatebot-aide/travisTokenCom'] \
+        = os.getenv('TEMPLATEBOT_TRAVIS_TOKEN_COM')
+    c['templatebot-aide/travisTokenOrg'] \
+        = os.getenv('TEMPLATEBOT_TRAVIS_TOKEN_ORG')
+
     return c
