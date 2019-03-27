@@ -7,7 +7,9 @@ from kafkit.registry.aiohttp import RegistryApi
 from kafkit.registry import Deserializer
 import structlog
 
-from .handlers import handle_generic_prerender, handle_technote_prerender
+from .handlers import (
+    handle_generic_prerender, handle_technote_prerender,
+    handle_technote_postrender)
 
 
 TECHNOTE_TEMPLATES = ('technote_rst')
@@ -139,6 +141,15 @@ async def route_event(*, event, app, schema_id, schema, topic, partition,
                 logger=logger)
         else:
             await handle_generic_prerender(
+                event=event,
+                schema=schema,
+                app=app,
+                logger=logger)
+
+    elif topic == app['templatebot-aide/postrenderTopic']:
+        if event['template_name'] in TECHNOTE_TEMPLATES:
+            # Start post-render for technote projects
+            await handle_technote_postrender(
                 event=event,
                 schema=schema,
                 app=app,
