@@ -71,4 +71,8 @@ def create_config():
     c['templatebot-aide/travisTokenOrg'] \
         = os.getenv('TEMPLATEBOT_TRAVIS_TOKEN_ORG')
 
+    # Credentials for LSST the Docs
+    c['templatebot-aide/ltdUsername'] = os.getenv('TEMPLATEBOT_LTD_USERNAME')
+    c['templatebot-aide/ltdPassword'] = os.getenv('TEMPLATEBOT_LTD_PASSWORD')
+
     return c
