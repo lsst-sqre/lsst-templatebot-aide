@@ -1,7 +1,7 @@
 """Workflows for GitHub operations common to many handlers.
 """
 
-__all__ = ('create_repo', 'get_authenticated_user')
+__all__ = ('create_repo', 'get_authenticated_user', 'create_pr')
 
 
 async def create_repo(homepage=None, description=None, *, org_name, repo_name,
@@ -76,4 +76,52 @@ async def get_authenticated_user(*, app, logger):
     """
     ghclient = app['templatebot-aide/gidgethub']
     response = await ghclient.getitem('/user')
+    return response
+
+
+async def create_pr(maintainer_can_modify=True, draft=False, *, owner, repo,
+                    head, base, title, body, app, logger):
+    """Create a GitHub pull request.
+
+    This function wraps `POST /repos/:owner/:repo/pulls
+    <https://developer.github.com/v3/pulls/#create-a-pull-request>`_.
+
+    Parameters
+    ----------
+    owner : `str`
+        The owner or organization name.
+    repo : `str`
+        The name of the repository.
+    title : `str`
+        The title of the pull request.
+    body : `str`
+        The content of the pull request message. This message can be
+        formatted with GitHub-flavored markdown.
+    head : `str`
+        The head of the pull request (the name of a branch). To create a
+        pull request from a fork, use the syntax ``username:branch``.
+    base : `str`
+        The name of the branch to merge ``head`` into.
+
+    Returns
+    -------
+    response : `dict`
+        The parsed JSON response body from GitHub.
+    """
+    url_vars = {
+        'owner': owner,
+        'repo': repo
+    }
+    data = {
+        'title': title,
+        'head': head,
+        'base': base,
+        'body': body,
+        'maintainer_can_modify': maintainer_can_modify,
+        'draft': draft
+    }
+    ghclient = app['templatebot-aide/gidgethub']
+    response = await ghclient.post(
+        '/repos{/owner}{/repo}/pulls',
+        url_vars=url_vars, data=data)
     return response
