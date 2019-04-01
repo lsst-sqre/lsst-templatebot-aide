@@ -1,11 +1,15 @@
 """Workflows for Travis CI.
 """
 
-__all__ = ('activate_travis', 'sync_travis_account', 'make_travis_repo_url',
-           'get_current_user')
+__all__ = ('get_current_user', 'activate_travis', 'sync_travis_account',
+           'get_generated_travis_repo_key', 'encrypt_travis_secret',
+           'make_travis_repo_url')
 
 import asyncio
+import base64
 
+import Cryptodome.PublicKey.RSA
+import Cryptodome.Cipher.PKCS1_v1_5
 import uritemplate
 
 
@@ -170,6 +174,78 @@ async def sync_travis_account(*, slug, app, logger):
         else:
             break
     await asyncio.sleep(10.)
+
+
+async def get_generated_travis_repo_key(*, slug, app, logger):
+    """Get the generated public key of a Travis repo.
+
+    Parameters
+    ----------
+    slug : `str`
+        The repo's GitHub slug. This determines whether the "com" or "org"
+        endpoint is used.
+    app : `aiohttp.web.Application`
+        The app instance.
+    logger
+        A `structlog` logger instance with bound context related to the
+        Kafka event.
+
+    Returns
+    -------
+    data : `dict`
+        Public key payload. See
+        https://developer.travis-ci.com/resource/key_pair_generated#attributes
+        for a description of what's included in this data.
+
+    Notes
+    -----
+    Uses https://developer.travis-ci.com/resource/key_pair_generated#find
+    """
+    host = _get_travis_url(slug=slug)
+    headers = make_travis_headers(token=_get_travis_token(app=app, slug=slug))
+    http_session = app['api.lsst.codes/httpSession']
+    url = uritemplate.expand(
+        host + '/repo{/slug}/key_pair/generated',
+        slug=slug
+    )
+    logger.debug('Public key url', url=url)
+    async with http_session.get(url, headers=headers) as response:
+        text = await response.text()
+        logger.debug('Public key response', data=text)
+        response.raise_for_status()
+        data = await response.json()
+    return data
+
+
+def encrypt_travis_secret(*, public_key, secret):
+    """Encrypt a string using a repository's public Travis CI key.
+
+    Parameters
+    ----------
+    public_key : `bytes`
+        The RSA public key. This can be obtained through
+        `get_generated_travis_repo_key` and the ``"public_key"`` key
+        of the returned object.
+    secret : `str`
+        The secret content to encrypt.
+
+    Returns
+    -------
+    encrypted : `bytes`
+        The encrypted secret. This content can be used as the value of a
+        ``secure`` key in a ``.travis.yml`` file.
+
+    Notes
+    ----
+    This function uses a ``PKCS1_v1_5`` RSA cipher, which isn't ideal, but
+    Travis *requires* it.
+    """
+    rsa_key = Cryptodome.PublicKey.RSA.import_key(public_key)
+    rsa_cipher = Cryptodome.Cipher.PKCS1_v1_5.new(rsa_key)
+
+    return base64.b64encode(
+        rsa_cipher.encrypt(secret.encode('utf-8'))
+    )
 
 
 def make_travis_repo_url(slug):

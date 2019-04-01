@@ -31,7 +31,8 @@ install_requires = [
     'kafkit==0.1.1',
     'aiokafka==0.5.0',
     'gidgethub==3.1.0',
-    'cachetools==3.1.0'
+    'cachetools==3.1.0',
+    'pycryptodomex==3.8.0',
 ]
 
 # Test dependencies
