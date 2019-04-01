@@ -75,4 +75,15 @@ def create_config():
     c['templatebot-aide/ltdUsername'] = os.getenv('TEMPLATEBOT_LTD_USERNAME')
     c['templatebot-aide/ltdPassword'] = os.getenv('TEMPLATEBOT_LTD_PASSWORD')
 
+    # Credentials that can be embedded in CI configs (encrypted) for their
+    # LSST the Docs deployments
+    c['templatebot-aide/ltdEmbedAwsId'] \
+        = os.getenv('TEMPLATEBOT_LTD_AWS_ID')
+    c['templatebot-aide/ltdEmbedAwsSecret'] \
+        = os.getenv('TEMPLATEBOT_LTD_AWS_SECRET')
+    c['templatebot-aide/ltdEmbedLtdUser'] \
+        = os.getenv('TEMPLATEBOT_LTD_USERNAME_EMBED')
+    c['templatebot-aide/ltdEmbedLtdPassword'] \
+        = os.getenv('TEMPLATEBOT_LTD_PASSWORD_EMBED')
+
     return c

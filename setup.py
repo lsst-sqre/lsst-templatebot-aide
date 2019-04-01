@@ -33,6 +33,8 @@ install_requires = [
     'gidgethub==3.1.0',
     'cachetools==3.1.0',
     'pycryptodomex==3.8.0',
+    'ruamel.yaml==0.15.89',
+    'GitPython==2.1.11',
 ]
 
 # Test dependencies
