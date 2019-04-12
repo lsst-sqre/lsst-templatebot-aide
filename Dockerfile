@@ -4,7 +4,7 @@ MAINTAINER LSST SQuaRE <sqre-admin@lists.lsst.org>
 LABEL description="Templatebot Aide is an api.lsst.codes microservice for that helps configure GitHub repositories in conjunction with Templatebot." \
       name="lsstsqre/templatebot"
 
-ENV APPDIR /app
+ENV APPDIR /home/app
 RUN mkdir $APPDIR
 WORKDIR $APPDIR
 
