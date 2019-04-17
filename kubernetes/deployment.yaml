@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: templatebotaide
+  labels:
+    app: templatebotaide
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: templatebotaide
+  template:
+    metadata:
+      labels:
+        app: templatebotaide
+    spec:
+      containers:
+      - name: templatebotaide-app
+        image: lsstsqre/templatebot-aide:tickets-DM-18535
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SQRBOTJR_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: sqrbot-jr
+              key: SQRBOTJR_TOKEN
+        - name: TEMPLATEBOT_GITHUB_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: templatebot
+              key: TEMPLATEBOT_GITHUB_TOKEN
+        - name: TEMPLATEBOT_GITHUB_USER
+          valueFrom:
+            secretKeyRef:
+              name: templatebot
+              key: TEMPLATEBOT_GITHUB_USER
+        - name: TEMPLATEBOT_LTD_AWS_ID
+          valueFrom:
+            secretKeyRef:
+              name: templatebotaide
+              key: TEMPLATEBOT_LTD_AWS_ID
+        - name: TEMPLATEBOT_LTD_AWS_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: templatebotaide
+              key: TEMPLATEBOT_LTD_AWS_SECRET
+        - name: TEMPLATEBOT_LTD_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: templatebotaide
+              key: TEMPLATEBOT_LTD_USERNAME
+        - name: TEMPLATEBOT_LTD_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: templatebotaide
+              key: TEMPLATEBOT_LTD_PASSWORD
+        - name: TEMPLATEBOT_LTD_USERNAME_EMBED
+          valueFrom:
+            secretKeyRef:
+              name: templatebotaide
+              key: TEMPLATEBOT_LTD_USERNAME_EMBED
+        - name: TEMPLATEBOT_LTD_PASSWORD_EMBED
+          valueFrom:
+            secretKeyRef:
+              name: templatebotaide
+              key: TEMPLATEBOT_LTD_PASSWORD_EMBED
+        - name: TEMPLATEBOT_TRAVIS_TOKEN_COM
+          valueFrom:
+            secretKeyRef:
+              name: templatebotaide
+              key: TEMPLATEBOT_TRAVIS_TOKEN_COM
+        - name: TEMPLATEBOT_TRAVIS_TOKEN_ORG
+          valueFrom:
+            secretKeyRef:
+              name: templatebotaide
+              key: TEMPLATEBOT_TRAVIS_TOKEN_ORG
+        envFrom:
+        - configMapRef:
+            name: sqrbot-jr
+        - configMapRef:
+            name: templatebot
