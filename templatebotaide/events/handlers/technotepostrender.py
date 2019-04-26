@@ -372,6 +372,11 @@ async def pr_latex_lander_config(*, event, ltd_url, app, logger):
     repo_name = github_repo_url_parts[-1]
     slug = f'{repo_owner}/{repo_name}'
 
+    # The comitter is the bot
+    github_user = await github.get_authenticated_user(
+        app=app, logger=logger)
+    author = git.Actor(github_user['name'], github_user['email'])
+
     with TemporaryDirectory() as tmpdir_name:
         repo = git.Repo.clone_from(github_repo_url, to_path=tmpdir_name)
 
@@ -394,7 +399,19 @@ async def pr_latex_lander_config(*, event, ltd_url, app, logger):
         repo.head.reset(index=True, working_tree=True)
 
         # Add the lsst-texmf submodule
-        # TODO
+        git.objects.submodule.base.Submodule.add(
+            repo,
+            'lsst-texmf',
+            path='lsst-texmf',
+            url='https://github.com/lsst/lsst-texmf.git',
+            branch='master'
+        )
+        repo.index.add([
+            str(Path(tmpdir_name) / '.gitmodules')
+        ])
+        repo.index.commit('Add lsst-texmf submodule',
+                          author=author,
+                          committer=author)
 
         # Add Lander client credentials to teh env.global section o
         # .travis.yml
