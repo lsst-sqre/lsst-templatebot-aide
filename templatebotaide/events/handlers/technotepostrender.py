@@ -113,36 +113,41 @@ async def handle_technote_postrender(*, event, schema, app, logger):
             )
         raise
 
-    try:
-        pr_data = await pr_ltd_credentials_for_travis(
-            event=event, ltd_url=ltd_product['published_url'],
-            app=app, logger=logger)
-        if event['slack_username'] is not None:
-            await post_message(
-                text=f"I've submitted a PR with deployment credentials. Go "
-                     "and merge it to finish your technote's set up!\n\n"
-                     f"{pr_data['html_url']}",
-                channel=event['slack_channel'],
-                thread_ts=event['slack_thread_ts'],
-                logger=logger,
-                app=app
-            )
-    except Exception:
-        logger.exception('Error PRing ltd credentials for travis')
-        if event['slack_username'] is not None:
-            await post_message(
-                text=f"Something went wrong creating a PR with "
-                     "deployment credentials.",
-                channel=event['slack_channel'],
-                thread_ts=event['slack_thread_ts'],
-                logger=logger,
-                app=app
-            )
+    if event['template_name'] == 'technote_rst':
+        # Handle the configuration for an rst technote
+        try:
+            pr_data = await pr_ltd_credentials_for_travis(
+                event=event, ltd_url=ltd_product['published_url'],
+                app=app, logger=logger)
+            if event['slack_username'] is not None:
+                await post_message(
+                    text=f"I've submitted a PR with deployment credentials. "
+                         "Go and merge it to finish your technote's set up!"
+                         f"\n\n{pr_data['html_url']}",
+                    channel=event['slack_channel'],
+                    thread_ts=event['slack_thread_ts'],
+                    logger=logger,
+                    app=app
+                )
+        except Exception:
+            logger.exception('Error PRing ltd credentials for travis')
+            if event['slack_username'] is not None:
+                await post_message(
+                    text=f"Something went wrong creating a PR with "
+                         "deployment credentials.",
+                    channel=event['slack_channel'],
+                    thread_ts=event['slack_thread_ts'],
+                    logger=logger,
+                    app=app
+                )
 
 
 async def pr_ltd_credentials_for_travis(*, event, ltd_url, app, logger):
     """Create a pull request to an LTD-Conveyor client-based technical note
     containing encrypted credentials in the ``.travis.yml`` file.
+
+    This function applies to reStructuredText-based technotes (`technote_rst`
+    template).
 
     Parameters
     ----------
