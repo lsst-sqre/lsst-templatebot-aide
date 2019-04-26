@@ -228,7 +228,9 @@ async def pr_ltd_credentials_for_travis(*, event, ltd_url, app, logger):
         github_user = await github.get_authenticated_user(
             app=app, logger=logger)
         author = git.Actor(github_user['name'], github_user['email'])
-        repo.index.commit('Added credentials', author=author)
+        repo.index.commit('Add credentials',
+                          author=author,
+                          committer=author)
 
         # since we cloned from GitHub, this should be GitHub
         origin = repo.remotes[0]
@@ -425,11 +427,9 @@ async def pr_latex_lander_config(*, event, ltd_url, app, logger):
 
         # Add `.travis.yml` and create commit
         repo.index.add([str(travis_yml_path)])
-        # The comitter is the bot
-        github_user = await github.get_authenticated_user(
-            app=app, logger=logger)
-        author = git.Actor(github_user['name'], github_user['email'])
-        repo.index.commit('Added credentials', author=author)
+        repo.index.commit('Add credentials',
+                          author=author,
+                          committer=author)
 
         origin.push(refspec=f'{new_branch_name}:{new_branch_name}')
 
