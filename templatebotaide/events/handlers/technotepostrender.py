@@ -113,36 +113,68 @@ async def handle_technote_postrender(*, event, schema, app, logger):
             )
         raise
 
-    try:
-        pr_data = await pr_ltd_credentials_for_travis(
-            event=event, ltd_url=ltd_product['published_url'],
-            app=app, logger=logger)
-        if event['slack_username'] is not None:
-            await post_message(
-                text=f"I've submitted a PR with deployment credentials. Go "
-                     "and merge it to finish your technote's set up!\n\n"
-                     f"{pr_data['html_url']}",
-                channel=event['slack_channel'],
-                thread_ts=event['slack_thread_ts'],
-                logger=logger,
-                app=app
-            )
-    except Exception:
-        logger.exception('Error PRing ltd credentials for travis')
-        if event['slack_username'] is not None:
-            await post_message(
-                text=f"Something went wrong creating a PR with "
-                     "deployment credentials.",
-                channel=event['slack_channel'],
-                thread_ts=event['slack_thread_ts'],
-                logger=logger,
-                app=app
-            )
+    if event['template_name'] == 'technote_rst':
+        # Handle the configuration for an rst technote
+        try:
+            pr_data = await pr_ltd_credentials_for_travis(
+                event=event, ltd_url=ltd_product['published_url'],
+                app=app, logger=logger)
+            if event['slack_username'] is not None:
+                await post_message(
+                    text=f"I've submitted a PR with deployment credentials. "
+                         "Go and merge it to finish your technote's set up!"
+                         f"\n\n{pr_data['html_url']}",
+                    channel=event['slack_channel'],
+                    thread_ts=event['slack_thread_ts'],
+                    logger=logger,
+                    app=app
+                )
+        except Exception:
+            logger.exception('Error PRing ltd credentials for travis')
+            if event['slack_username'] is not None:
+                await post_message(
+                    text=f"Something went wrong creating a PR with "
+                         "deployment credentials.",
+                    channel=event['slack_channel'],
+                    thread_ts=event['slack_thread_ts'],
+                    logger=logger,
+                    app=app
+                )
+    elif event['template_name'] == 'technote_latex':
+        # Handle the configuration PR for a LaTeX technote
+        try:
+            pr_data = await pr_latex_lander_config(
+                event=event, ltd_url=ltd_product['published_url'],
+                app=app, logger=logger)
+            if event['slack_username'] is not None:
+                await post_message(
+                    text=f"I've submitted a PR with deployment credentials. "
+                         "Go and merge it to finish your technote's set up!"
+                         f"\n\n{pr_data['html_url']}",
+                    channel=event['slack_channel'],
+                    thread_ts=event['slack_thread_ts'],
+                    logger=logger,
+                    app=app
+                )
+        except Exception:
+            logger.exception('Error PRing lander config for travis')
+            if event['slack_username'] is not None:
+                await post_message(
+                    text=f"Something went wrong creating a PR with "
+                         "deployment credentials.",
+                    channel=event['slack_channel'],
+                    thread_ts=event['slack_thread_ts'],
+                    logger=logger,
+                    app=app
+                )
 
 
 async def pr_ltd_credentials_for_travis(*, event, ltd_url, app, logger):
     """Create a pull request to an LTD-Conveyor client-based technical note
     containing encrypted credentials in the ``.travis.yml`` file.
+
+    This function applies to reStructuredText-based technotes (`technote_rst`
+    template).
 
     Parameters
     ----------
@@ -196,7 +228,9 @@ async def pr_ltd_credentials_for_travis(*, event, ltd_url, app, logger):
         github_user = await github.get_authenticated_user(
             app=app, logger=logger)
         author = git.Actor(github_user['name'], github_user['email'])
-        repo.index.commit('Added credentials', author=author)
+        repo.index.commit('Add credentials',
+                          author=author,
+                          committer=author)
 
         # since we cloned from GitHub, this should be GitHub
         origin = repo.remotes[0]
@@ -304,6 +338,213 @@ async def insert_ltd_client_credentials(
             secret="LTD_PASSWORD="
                    f"{app['templatebot-aide/ltdEmbedLtdPassword']}"),
         comment='LTD_PASSWORD',
+        comment_indent=6
+    ))
+
+    stream = StringIO()
+    yaml.dump(data, stream)
+    return stream.getvalue()
+
+
+async def pr_latex_lander_config(*, event, ltd_url, app, logger):
+    """Create a GitHub Pull Request that configures the Lander credentials
+    in the .travis.yml file, and adds the lsst-texmf submodule.
+
+    Parameters
+    ----------
+    event : `dict`
+        The parsed content of the ``templatebot-postrender`` event's message.
+    ltd_url : `str`
+        The homepage URL of the project, served by LSST the Docs. For example,
+        ``https://sqr-000.lsst.io``. This is the ``published_url`` field
+        of the LTD ``product`` resource.
+    app : `aiohttp.web.Application`
+        The app instance.
+    logger
+        A `structlog` logger instance with bound context related to the
+        Kafka event.
+
+    See also
+    --------
+    pr_ltd_credentials_for_travis
+    """
+    github_repo_url = event['github_repo']
+    github_repo_url_parts = event['github_repo'].split('/')
+    repo_owner = github_repo_url_parts[-2]
+    repo_name = github_repo_url_parts[-1]
+    slug = f'{repo_owner}/{repo_name}'
+
+    # The comitter is the bot
+    github_user = await github.get_authenticated_user(
+        app=app, logger=logger)
+    author = git.Actor(github_user['name'], github_user['email'])
+
+    with TemporaryDirectory() as tmpdir_name:
+        repo = git.Repo.clone_from(github_repo_url, to_path=tmpdir_name)
+
+        # Since we cloned from GitHub, the first origin should be GitHub
+        origin = repo.remotes[0]
+        origin = add_auth_to_remote(remote=origin, app=app)
+
+        travis_yml_path = Path(tmpdir_name) / '.travis.yml'
+        logger.debug(
+            '.travis.yml path',
+            path=str(travis_yml_path),
+            exists=travis_yml_path.is_file())
+
+        # Create the branch
+        new_branch_name = 'u/{user}/config'.format(
+            user=app['templatebot-aide/githubUsername'])
+        new_branch = repo.create_head(new_branch_name)
+        repo.head.reference = new_branch
+        # reset the index and working tree to match the pointed-to commit
+        repo.head.reset(index=True, working_tree=True)
+
+        # Add the lsst-texmf submodule
+        git.objects.submodule.base.Submodule.add(
+            repo,
+            'lsst-texmf',
+            path='lsst-texmf',
+            url='https://github.com/lsst/lsst-texmf.git',
+            branch='master'
+        )
+        repo.index.add([
+            str(Path(tmpdir_name) / '.gitmodules')
+        ])
+        repo.index.commit('Add lsst-texmf submodule',
+                          author=author,
+                          committer=author)
+
+        # Add Lander client credentials to teh env.global section o
+        # .travis.yml
+        travis_yml_data = await insert_lander_client_credentials(
+            slug=slug,
+            travis_yml_path=travis_yml_path,
+            repo=repo,
+            app=app,
+            logger=logger)
+        travis_yml_path.write_text(travis_yml_data)
+
+        # Add `.travis.yml` and create commit
+        repo.index.add([str(travis_yml_path)])
+        repo.index.commit('Add credentials',
+                          author=author,
+                          committer=author)
+
+        origin.push(refspec=f'{new_branch_name}:{new_branch_name}')
+
+        await asyncio.sleep(1.)
+
+        pr_body = write_travis_pr_body(
+            ltd_url=ltd_url, branch_name=new_branch_name)
+        pr_response = await github.create_pr(
+            owner=repo_owner,
+            repo=repo_name,
+            title='Add deployment credentials',
+            body=pr_body,
+            head=new_branch_name,
+            base='master',
+            app=app,
+            logger=logger
+        )
+
+        logger.debug('Pushed credentials to branch', branch=new_branch_name)
+
+    return pr_response
+
+
+async def insert_lander_client_credentials(
+        *, slug, travis_yml_path, repo, app, logger):
+    """Insert credentials needed by the Lander client into the ``.travis.yml``
+    file of a repository.
+
+    Parameters
+    ----------
+    slug : `str`
+        The slug of the repository (``<owner>/<name>``) that identifies this
+        repository to Travis CI.
+    travis_yml_path : `pathlib.Path`
+        The local filessytem path of the ``.travis.yml`` file in a repository.
+    repo
+        A GitPython repository instance.
+    app : `aiohttp.web.Application`
+        The app instance.
+    logger
+        A `structlog` logger instance with bound context related to the
+        Kafka event.
+
+    Notes
+    -----
+    This function adds secrets to the ``env.global`` key of the ``.travis.yml``
+    file so that the secrets are available in all jobs in the matrix. The
+    follow enironment variables are added as encrypted strings
+
+    - ``LTD_KEEPER_URL``
+    - ``LTD_KEEPER_USER``
+    - ``LTD_KEEPER_PASSWORD``
+    - ``LTD_AWS_ID``
+    - ``LTD_AWS_SECRET``
+
+    These environment variables can be consumed by the ``lander`` upload tool
+    (see https://github.com/lsst-sqre/lander for more information).
+    """
+    yaml_text = travis_yml_path.read_text()
+    yaml = ruamel.yaml.YAML()
+    yaml.indent(mapping=2, sequence=4, offset=2)
+    data = yaml.load(yaml_text)
+    if 'env' not in data:
+        data['env'] = ruamel.yaml.comments.CommentedMap()
+    env = data['env']
+    if 'global' not in env:
+        env['global'] = ruamel.yaml.comments.CommentedSeq()
+    env_global = env['global']
+
+    key_info = await get_generated_travis_repo_key(
+        slug=slug,
+        app=app,
+        logger=logger
+    )
+
+    env_global.append(new_secure_map(
+        encrypt_travis_secret(
+            public_key=key_info['public_key'],
+            secret=f"LTD_AWS_ID={app['templatebot-aide/ltdEmbedAwsId']}"),
+        comment='LTD_AWS_ID',
+        comment_indent=6
+    ))
+
+    env_global.append(new_secure_map(
+        encrypt_travis_secret(
+            public_key=key_info['public_key'],
+            secret="LTD_AWS_SECRET="
+                   f"{app['templatebot-aide/ltdEmbedAwsSecret']}"),
+        comment='LTD_AWS_SECRET',
+        comment_indent=6
+    ))
+
+    env_global.append(new_secure_map(
+        encrypt_travis_secret(
+            public_key=key_info['public_key'],
+            secret="LTD_KEEPER_USER="
+                   f"{app['templatebot-aide/ltdEmbedLtdUser']}"),
+        comment='LTD_KEEPER_USERNAME',
+        comment_indent=6
+    ))
+
+    env_global.append(new_secure_map(
+        encrypt_travis_secret(
+            public_key=key_info['public_key'],
+            secret="LTD_KEEPER_PASSWORD="
+                   f"{app['templatebot-aide/ltdEmbedLtdPassword']}"),
+        comment='LTD_KEEPER_PASSWORD',
+        comment_indent=6
+    ))
+
+    env_global.append(new_secure_map(
+        encrypt_travis_secret(
+            public_key=key_info['public_key'],
+            secret="LTD_KEEPER_URL=https://keeper.lsst.codes"),
+        comment='LTD_KEEPER_URL',
         comment_indent=6
     ))
 

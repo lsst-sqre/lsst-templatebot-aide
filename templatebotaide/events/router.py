@@ -12,7 +12,7 @@ from .handlers import (
     handle_technote_postrender)
 
 
-TECHNOTE_TEMPLATES = ('technote_rst')
+TECHNOTE_TEMPLATES = ('technote_rst', 'technote_latex')
 """Names of templates in https://github.com/lsst/templates that correspond to
 technical notes.
 
