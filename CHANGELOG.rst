@@ -2,6 +2,16 @@
 Change log
 ##########
 
+0.0.2 (2019-04-30)
+==================
+
+This release handles the unique post render requirements of ``technote_latex`` templates:
+
+- The encrypted environment variables are slightly different than reStructuredText technotes.
+- Add the lsst-texmf submodule.
+
+:jirab:`DM-19186`
+
 0.0.1 (2019-04-17)
 ==================
 
