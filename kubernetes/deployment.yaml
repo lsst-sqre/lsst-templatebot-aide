@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: templatebotaide-app
-        image: lsstsqre/templatebot-aide:tickets-DM-19186
+        image: lsstsqre/templatebot-aide:0.0.3
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

@@ -50,12 +50,17 @@ async def handle_technote_prerender(*, event, schema, app, logger):
             continue
         series_numbers.append(int(m.group('number')))
 
+    logger.info(
+        'Collected existing numbers for series, series_numbers',
+        series=series,
+        series_numbers=series_numbers)
+
     new_number = propose_number([int(n) for n in series_numbers])
     serial_number = f'{new_number:03d}'
     repo_name = f'{series.lower()}-{serial_number}'
 
-    logger.debug('Selected new technote repo name',
-                 name=repo_name, org=org_name)
+    logger.info('Selected new technote repo name',
+                name=repo_name, org=org_name)
 
     try:
         repo_info = await create_repo(
@@ -80,8 +85,8 @@ async def handle_technote_prerender(*, event, schema, app, logger):
                 app=app
             )
             await post_message(
-                text="This is the repo URL I tried: "
-                     f"`{repo_info['html_url']}`.",
+                text="This is the repo I tried: "
+                     f"`{org_name}/{repo_name}`.",
                 channel=event['slack_channel'],
                 thread_ts=event['slack_thread_ts'],
                 logger=logger,
