@@ -85,8 +85,8 @@ async def handle_technote_prerender(*, event, schema, app, logger):
                 app=app
             )
             await post_message(
-                text="This is the repo URL I tried: "
-                     f"`{repo_info['html_url']}`.",
+                text="This is the repo I tried: "
+                     f"`{org_name}/{repo_name}`.",
                 channel=event['slack_channel'],
                 thread_ts=event['slack_thread_ts'],
                 logger=logger,
