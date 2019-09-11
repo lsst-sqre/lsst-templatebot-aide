@@ -50,12 +50,17 @@ async def handle_technote_prerender(*, event, schema, app, logger):
             continue
         series_numbers.append(int(m.group('number')))
 
+    logger.info(
+        'Collected existing numbers for series, series_numbers',
+        series=series,
+        series_numbers=series_numbers)
+
     new_number = propose_number([int(n) for n in series_numbers])
     serial_number = f'{new_number:03d}'
     repo_name = f'{series.lower()}-{serial_number}'
 
-    logger.debug('Selected new technote repo name',
-                 name=repo_name, org=org_name)
+    logger.info('Selected new technote repo name',
+                name=repo_name, org=org_name)
 
     try:
         repo_info = await create_repo(
