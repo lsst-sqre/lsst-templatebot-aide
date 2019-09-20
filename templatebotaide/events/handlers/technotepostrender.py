@@ -140,7 +140,7 @@ async def handle_technote_postrender(*, event, schema, app, logger):
                     logger=logger,
                     app=app
                 )
-    elif event['template_name'] == 'technote_latex':
+    elif event['template_name'] in ('technote_latex', 'technote_aastex'):
         # Handle the configuration PR for a LaTeX technote
         try:
             pr_data = await pr_latex_lander_config(
