@@ -2,6 +2,13 @@
 Change log
 ##########
 
+0.0.4 (2019-09-20)
+==================
+
+This release provides support for ``technote_aastex`` templates, which are prepared similarly to ``technote_latex`` templates.
+
+:jirab:`21378`
+
 0.0.3 (2019-09-11)
 ==================
 
