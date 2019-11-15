@@ -51,6 +51,15 @@ def create_config():
     # Kafka broker host (use same config variable as SQRBOTJR)
     c['templatebot-aide/brokerUrl'] = os.getenv('KAFKA_BROKER')
 
+    # Kafka security protocol: PLAINTEXT or SSL
+    c['templatebot-aide/kafkaProtocol'] = os.getenv('KAFKA_PROTOCOL')
+
+    # TLS certificates for cluster + client for use with the SSL Kafka protocol
+    c['templatebot-aide/clusterCaPath'] = os.getenv('KAFKA_CLUSTER_CA')
+    c['templatebot-aide/clientCaPath'] = os.getenv('KAFKA_CLIENT_CA')
+    c['templatebot-aide/clientCertPath'] = os.getenv('KAFKA_CLIENT_CERT')
+    c['templatebot-aide/clientKeyPath'] = os.getenv('KAFKA_CLIENT_KEY')
+
     # Slack token (use same config variable as SQRBOTJR)
     c['templatebot-aide/slackToken'] = os.getenv('SLACK_TOKEN')
 
