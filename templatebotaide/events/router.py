@@ -31,31 +31,14 @@ async def consume_events(app):
         url=app['templatebot-aide/registryUrl'])
     deserializer = Deserializer(registry=registry)
 
-    # Set up topic names
-    if app['templatebot-aide/topicsVersion']:
-        v = app['templatebot-aide/topicsVersion']
-        app['templatebot-aide/prerenderTopic'] = f'templatebot-prerender-{v}'
-        app['templatebot-aide/renderreadyTopic'] \
-            = f'templatebot-render_ready-{v}'
-        app['templatebot-aide/postrenderTopic'] = f'templatebot-postrender-{v}'
-    else:
-        app['templatebot-aide/prerenderTopic'] = f'templatebot-prerender'
-        app['templatebot-aide/renderreadyTopic'] = 'templatebot-render_ready'
-        app['templatebot-aide/postrenderTopic'] = f'templatebot-postrender'
     subscription_topic_names = [
         app['templatebot-aide/prerenderTopic'],
         app['templatebot-aide/postrenderTopic']
     ]
 
-    # Set up the consumer group name
-    if app['templatebot-aide/topicsVersion']:
-        group_id = '_'.join((app["api.lsst.codes/name"],
-                             app['templatebot-aide/topicsVersion']))
-    else:
-        group_id = app['api.lsst.codes/name']
     consumer_settings = {
         'bootstrap_servers': app['templatebot-aide/brokerUrl'],
-        'group_id': group_id,
+        'group_id': app['templatebot-aide/kafkaGroupId'],
         'auto_offset_reset': 'latest',
         'ssl_context': app['templatebot-aide/kafkaSslContext'],
         'security_protocol': app['templatebot-aide/kafkaProtocol']

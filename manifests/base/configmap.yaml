@@ -10,5 +10,10 @@ data:
   KAFKA_BROKER: "localhost:9092"
   KAFKA_PROTOCOL: "PLAINTEXT"
   # Schema registry subject configuration
-  SQRBOTJR_SUBJECT_SUFFIX: ""
-  SQRBOTJR_SUBJECT_COMPATIBILITY: "FORWARD_TRANSITIVE"
+  TEMPLATEBOT_SUBJECT_SUFFIX: ""
+  # Topic names
+  TEMPLATEBOT_TOPIC_PRERENDER: 'templatebot.prerender'
+  TEMPLATEBOT_TOPIC_RENDERREADY: 'templatebot.render-ready'
+  TEMPLATEBOT_TOPIC_POSTRENDER: 'templatebot.postrender'
+  # Kafka consumer group ID
+  TEMPLATEBOT_GROUP_ID: 'templatebot-aide'
