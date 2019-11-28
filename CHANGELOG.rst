@@ -2,19 +2,56 @@
 Change log
 ##########
 
+0.1.0 (2019-11-29)
+==================
+
+This release focuses on providing a better deployment, configuration, and compatibility with Kubernetes clusters secured with SSL:
+
+- templatebot-aide can now be deployed through Kustomize.
+  The base is located at ``/manifests/base``.
+  This means that you can incorporate this application into a specific Kustomize-based application (such as one deployed by Argo CD) with a URL such as ``github.com/lsst-sqre/lsst-templatebot-aide.git//manifests/base?ref=0.1.0``.
+  There is a separate template for the Secret resource expected by the deployment at ``/manifest/base/secret.template.yaml``.
+
+- Topics names can now be configured directly.
+  See the environment variables:
+
+  - ``TEMPLATEBOT_TOPIC_PRERENDER``
+  - ``TEMPLATEBOT_TOPIC_RENDERREADY``
+  - ``TEMPLATEBOT_TOPIC_POSTRENDER``
+
+  This granular configuration allows you to consume production topics, but output development topics, for example.
+
+- The old "staging version" configuration is now the ``TEMPLATEBOT_SUBJECT_SUFFIX`` environment variable.
+  This configuration is used solely as a suffix on the fully-qualified name of a schema when determining it's subject name at the Schema Registry.
+  Previously it also impacted topic names.
+  Use a subject suffix when trying out new Avro schemas to avoid polluting the production subject in the registry.
+
+- templatebot-aide can now connect to Kafka brokers through SSL.
+  Set the ``KAFKA_PROTOCOL`` environment variable to ``SSL``.
+  Then set these environment variables to the paths of specific TLS certificates and keys:
+
+  - ``KAFKA_CLUSTER_CA`` (the Kafka cluster's CA certificate)
+  - ``KAFKA_CLIENT_CA`` (Templatebot's client CA certificate)
+  - ``KAFKA_CLIENT_CERT`` (Templatebot's client certificate)
+  - ``KAFKA_CLIENT_KEY`` (Templatebot's client key)
+
+- The consumer group ID can now be set independently of the application name with the environment variable ``TEMPLATEBOT_GROUP_ID``.
+
+:jirab:`DM-22100`
+
 0.0.4 (2019-09-20)
 ==================
 
 This release provides support for ``technote_aastex`` templates, which are prepared similarly to ``technote_latex`` templates.
 
-:jirab:`21378`
+:jirab:`DM-21378`
 
 0.0.3 (2019-09-11)
 ==================
 
 This release fixes error reporting when a GitHub repo could not be created for a technote.
 
-:jirab:`21257`
+:jirab:`DM-21257`
 
 0.0.2 (2019-04-30)
 ==================
