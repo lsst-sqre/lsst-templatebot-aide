@@ -46,20 +46,36 @@ def create_config():
     ).upper()
 
     # Schema Registry hostname (use same config variable as SQRBOTJR)
-    c['templatebot-aide/registryUrl'] = os.getenv('SQRBOTJR_REGISTRY')
+    c['templatebot-aide/registryUrl'] = os.getenv('REGISTRY_URL')
 
     # Kafka broker host (use same config variable as SQRBOTJR)
-    c['templatebot-aide/brokerUrl'] = os.getenv('SQRBOTJR_BROKER')
+    c['templatebot-aide/brokerUrl'] = os.getenv('KAFKA_BROKER')
+
+    # Kafka security protocol: PLAINTEXT or SSL
+    c['templatebot-aide/kafkaProtocol'] = os.getenv('KAFKA_PROTOCOL')
+
+    # TLS certificates for cluster + client for use with the SSL Kafka protocol
+    c['templatebot-aide/clusterCaPath'] = os.getenv('KAFKA_CLUSTER_CA')
+    c['templatebot-aide/clientCaPath'] = os.getenv('KAFKA_CLIENT_CA')
+    c['templatebot-aide/clientCertPath'] = os.getenv('KAFKA_CLIENT_CERT')
+    c['templatebot-aide/clientKeyPath'] = os.getenv('KAFKA_CLIENT_KEY')
 
     # Slack token (use same config variable as SQRBOTJR)
-    c['templatebot-aide/slackToken'] = os.getenv('SQRBOTJR_TOKEN')
+    c['templatebot-aide/slackToken'] = os.getenv('SLACK_TOKEN')
 
-    # Version name for Kafka topics, if application is running in a staging
-    # environment. This functions similarly to $SQRBOTJR_STAGING_VERSION but
-    # it's an independent configuration so that templatebot can be developed
-    # independently of sqrbot.
-    c['templatebot-aide/topicsVersion'] = \
-        os.getenv('TEMPLATEBOT_TOPICS_VERSION') or ''
+    # Suffix to add to Schema Registry suffix names. This is useful when
+    # deploying sqrbot-jr for testing/staging and you do not want to affect
+    # the production subject and its compatibility lineage.
+    c['templatebot-aide/subjectSuffix'] = os.getenv(
+        'TEMPLATEBOT_SUBJECT_SUFFIX', '')
+
+    # Topic names
+    c['templatebot-aide/prerenderTopic'] = os.getenv(
+        'TEMPLATEBOT_TOPIC_PRERENDER', 'templatebot.prerender')
+    c['templatebot-aide/renderreadyTopic'] = os.getenv(
+        'TEMPLATEBOT_TOPIC_RENDERREADY', 'templatebot.render-ready')
+    c['templatebot-aide/postrenderTopic'] = os.getenv(
+        'TEMPLATEBOT_TOPIC_POSTRENDER', 'templatebot.postrender')
 
     # GitHub token for SQuaRE bot
     c['templatebot-aide/githubToken'] = os.getenv('TEMPLATEBOT_GITHUB_TOKEN')
@@ -85,5 +101,10 @@ def create_config():
         = os.getenv('TEMPLATEBOT_LTD_USERNAME_EMBED')
     c['templatebot-aide/ltdEmbedLtdPassword'] \
         = os.getenv('TEMPLATEBOT_LTD_PASSWORD_EMBED')
+
+    # Kafka consumer group ID
+    c['templatebot-aide/kafkaGroupId'] = os.getenv(
+        'TEMPLATEBOT_GROUP_ID', c['api.lsst.codes/name']
+    )
 
     return c

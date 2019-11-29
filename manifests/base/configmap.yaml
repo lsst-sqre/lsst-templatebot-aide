@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: templatebot-aide
+data:
+  # These configurations are injected as environment variables into the
+  # sqrbot app container.
+  API_LSST_CODES_NAME: "templatebot-aide"
+  API_LSST_CODES_PROFILE: "production"
+  # Kafka broker configuration
+  KAFKA_BROKER: "localhost:9092"
+  KAFKA_PROTOCOL: "PLAINTEXT"
+  TEMPLATEBOT_GROUP_ID: 'templatebot-aide'
+  # KAFKA_CLUSTER_CA: ...
+  # KAFKA_CLIENT_CA: ...
+  # KAFKA_CLIENT_CERT: ...
+  # KAFKA_CLIENT_KEY: ...
+  # Schema registry subject configuration
+  TEMPLATEBOT_SUBJECT_SUFFIX: ""
+  REGISTRY_URL: "http://localhost:8081"
+  # Topic names
+  TEMPLATEBOT_TOPIC_PRERENDER: 'templatebot.prerender'
+  TEMPLATEBOT_TOPIC_RENDERREADY: 'templatebot.render-ready'
+  TEMPLATEBOT_TOPIC_POSTRENDER: 'templatebot.postrender'
