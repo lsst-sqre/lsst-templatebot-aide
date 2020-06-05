@@ -6,8 +6,15 @@ __all__ = ['create_repo', 'get_authenticated_user', 'add_auth_to_remote',
 import urllib
 
 
-async def create_repo(homepage=None, description=None, *, org_name, repo_name,
-                      app, logger):
+async def create_repo(
+    homepage=None,
+    description=None,
+    allow_squash_merge=False,
+    allow_merge_commit=True,
+    allow_rebase_merge=False,
+    delete_branch_on_merge=True,
+    *, org_name, repo_name, app, logger
+):
     """Create a new repository on GitHub.
 
     This function wraps the `/orgs{/org_name}/repos
@@ -41,7 +48,11 @@ async def create_repo(homepage=None, description=None, *, org_name, repo_name,
         'auto_init': False,
         # Defaults for LSST
         'has_projects': False,
-        'has_wiki': False
+        'has_wiki': False,
+        'allow_squash_merge': allow_squash_merge,
+        'allow_merge_commit': allow_merge_commit,
+        'allow_rebase_merge': allow_rebase_merge,
+        'delete_branch_on_merge': delete_branch_on_merge,
     }
     if homepage is not None:
         data['homepage'] = homepage
