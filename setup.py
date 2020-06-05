@@ -34,7 +34,7 @@ install_requires = [
     'cachetools==3.1.0',
     'pycryptodomex==3.8.0',
     'ruamel.yaml==0.15.89',
-    'GitPython==2.1.11',
+    'GitPython==3.1.3',
 ]
 
 # Test dependencies
