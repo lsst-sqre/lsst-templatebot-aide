@@ -63,10 +63,15 @@ async def handle_technote_prerender(*, event, schema, app, logger):
     logger.info('Selected new technote repo name',
                 name=repo_name, org=org_name)
 
+    ltd_slug = f'{series.lower()}-{serial_number}'
+    ltd_url = f'https://{ltd_slug}.lsst.io'
+
     try:
         repo_info = await create_repo(
             org_name=org_name,
             repo_name=repo_name,
+            homepage=ltd_url,
+            description=event['variables']['title'],
             app=app,
             logger=logger
         )
@@ -97,7 +102,6 @@ async def handle_technote_prerender(*, event, schema, app, logger):
 
     logger.info('Created repo', repo_info=repo_info)
 
-    ltd_slug = f'{series.lower()}-{serial_number}'
     try:
         ltd_product = await register_ltd_product(
             slug=ltd_slug,
