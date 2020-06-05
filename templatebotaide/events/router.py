@@ -8,8 +8,11 @@ from kafkit.registry import Deserializer
 import structlog
 
 from .handlers import (
-    handle_generic_prerender, handle_technote_prerender,
-    handle_technote_postrender)
+    handle_generic_prerender,
+    handle_technote_prerender,
+    handle_document_prerender,
+    handle_technote_postrender,
+)
 
 
 TECHNOTE_TEMPLATES = ('technote_rst', 'technote_latex', 'technote_aastex')
@@ -18,6 +21,14 @@ technical notes.
 
 Technical notes have a special process for assigning document handles through
 GitHub repository names in a given organization.
+"""
+
+DOCUSHARE_TEMPLATES = ('test_report',)
+"""Names of templates in https://github.com/lsst/templates that correspond to
+DocuShare-centric documents.
+
+These documents have a preset handle, unlike technotes, but still need to
+integrate with LSST the Docs.
 """
 
 
@@ -124,6 +135,14 @@ async def route_event(*, event, app, schema_id, schema, topic, partition,
                 schema=schema,
                 app=app,
                 logger=logger)
+        elif event['template_name'] in DOCUSHARE_TEMPLATES:
+            # DocuShare-type document
+            await handle_document_prerender(
+                event=event,
+                schema=schema,
+                app=app,
+                logger=logger,
+            )
         else:
             await handle_generic_prerender(
                 event=event,
