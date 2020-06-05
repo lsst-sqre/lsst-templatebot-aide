@@ -1,7 +1,9 @@
-"""Workflows for GitHub operations common to many handlers.
-"""
+"""Workflows for GitHub operations common to many handlers."""
 
-__all__ = ('create_repo', 'get_authenticated_user', 'create_pr')
+__all__ = ['create_repo', 'get_authenticated_user', 'add_auth_to_remote',
+           'create_pr']
+
+import urllib
 
 
 async def create_repo(homepage=None, description=None, *, org_name, repo_name,
@@ -77,6 +79,38 @@ async def get_authenticated_user(*, app, logger):
     ghclient = app['templatebot-aide/gidgethub']
     response = await ghclient.getitem('/user')
     return response
+
+
+def add_auth_to_remote(*, remote, app):
+    """Add username and password authentication to the URL of a GitPython
+    remote.
+
+    Parameters
+    ----------
+    remote
+        A GitPython remote instance.
+    app : `aiohttp.web.Application`
+        The app instance, for configuration.
+
+    Returns
+    -------
+    remote
+        The modified remote instance (same as the parameter).
+    """
+    # Modify the repo URL to include auth info in the netloc
+    # <user>:<token>@github.com
+    bottoken = app['templatebot-aide/githubToken']
+    botuser = app['templatebot-aide/githubUsername']
+
+    remote_url = [u for u in remote.urls][0]
+    url_parts = urllib.parse.urlparse(remote_url)
+    authed_url_parts = list(url_parts)
+    # The [1] index is the netloc.
+    authed_url_parts[1] = f'{botuser}:{bottoken}@{url_parts[1]}'
+    authed_remote_url = urllib.parse.urlunparse(authed_url_parts)
+    remote.set_url(authed_remote_url, old_url=remote_url)
+
+    return remote
 
 
 async def create_pr(maintainer_can_modify=True, draft=False, *, owner, repo,

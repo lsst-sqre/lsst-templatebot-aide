@@ -5,7 +5,6 @@ __all__ = ('handle_technote_postrender',)
 import asyncio
 from tempfile import TemporaryDirectory
 from pathlib import Path
-import urllib
 
 import git
 
@@ -98,7 +97,7 @@ async def pr_latex_submodules(*, event, app, logger):
 
         # Since we cloned from GitHub, the first origin should be GitHub
         origin = repo.remotes[0]
-        origin = add_auth_to_remote(remote=origin, app=app)
+        origin = github.add_auth_to_remote(remote=origin, app=app)
 
         # Create the branch
         new_branch_name = 'u/{user}/config'.format(
@@ -155,35 +154,3 @@ async def pr_latex_submodules(*, event, app, logger):
         logger.debug('Finished pushing lsst-texmf PR', branch=new_branch_name)
 
     return pr_response
-
-
-def add_auth_to_remote(*, remote, app):
-    """Add username and password authentication to the URL of a GitPython
-    remote.
-
-    Parameters
-    ----------
-    remote
-        A GitPython remote instance.
-    app : `aiohttp.web.Application`
-        The app instance, for configuration.
-
-    Returns
-    -------
-    remote
-        The modified remote instance (same as the parameter).
-    """
-    # Modify the repo URL to include auth info in the netloc
-    # <user>:<token>@github.com
-    bottoken = app['templatebot-aide/githubToken']
-    botuser = app['templatebot-aide/githubUsername']
-
-    remote_url = [u for u in remote.urls][0]
-    url_parts = urllib.parse.urlparse(remote_url)
-    authed_url_parts = list(url_parts)
-    # The [1] index is the netloc.
-    authed_url_parts[1] = f'{botuser}:{bottoken}@{url_parts[1]}'
-    authed_remote_url = urllib.parse.urlunparse(authed_url_parts)
-    remote.set_url(authed_remote_url, old_url=remote_url)
-
-    return remote
