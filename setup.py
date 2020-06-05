@@ -39,8 +39,8 @@ install_requires = [
 
 # Test dependencies
 tests_require = [
-    'pytest==4.2.0',
-    'pytest-flake8==1.0.4',
+    'pytest==5.4.3',
+    'pytest-flake8==1.0.6',
     'aiohttp-devtools==0.11',
 ]
 tests_require += install_requires
