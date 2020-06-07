@@ -5,6 +5,7 @@ from copy import deepcopy
 import datetime
 import gidgethub
 
+from templatebotaide.lsstthedocs import register_ltd_product
 from templatebotaide.github import create_repo
 from templatebotaide.slack import post_message, get_user_info
 
@@ -62,10 +63,15 @@ async def handle_technote_prerender(*, event, schema, app, logger):
     logger.info('Selected new technote repo name',
                 name=repo_name, org=org_name)
 
+    ltd_slug = f'{series.lower()}-{serial_number}'
+    ltd_url = f'https://{ltd_slug}.lsst.io'
+
     try:
         repo_info = await create_repo(
             org_name=org_name,
             repo_name=repo_name,
+            homepage=ltd_url,
+            description=event['variables']['title'],
             app=app,
             logger=logger
         )
@@ -95,6 +101,40 @@ async def handle_technote_prerender(*, event, schema, app, logger):
         raise
 
     logger.info('Created repo', repo_info=repo_info)
+
+    try:
+        ltd_product = await register_ltd_product(
+            slug=ltd_slug,
+            title=event['variables']['title'],
+            github_repo=repo_info['html_url'],
+            app=app,
+            logger=logger)
+        if event['slack_username'] is not None:
+            await post_message(
+                text=(
+                    "I've set up the technote on _LSST the Docs._ Your "
+                    f"document will appear at {ltd_product['published_url']} ",
+                    "in a few minutes after the GitHub Actions build finishes."
+                ),
+                channel=event['slack_channel'],
+                thread_ts=event['slack_thread_ts'],
+                logger=logger,
+                app=app
+            )
+    except Exception:
+        logger.exception(
+            'Failed to create the LTD product',
+            ltd_slug=ltd_slug)
+        if event['slack_username'] is not None:
+            await post_message(
+                text="Something went wrong setting up _LSST the Docs._ I will "
+                     "continue to configure the technote, but docs won't be "
+                     "available right away. Contact SQuaRE for help.",
+                channel=event['slack_channel'],
+                thread_ts=event['slack_thread_ts'],
+                logger=logger,
+                app=app
+            )
 
     # Get the user's identity to use as the initial author
     user_info = await get_user_info(

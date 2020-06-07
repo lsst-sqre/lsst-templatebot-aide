@@ -1,11 +1,20 @@
-"""Workflows for GitHub operations common to many handlers.
-"""
+"""Workflows for GitHub operations common to many handlers."""
 
-__all__ = ('create_repo', 'get_authenticated_user', 'create_pr')
+__all__ = ['create_repo', 'get_authenticated_user', 'add_auth_to_remote',
+           'create_pr']
+
+import urllib
 
 
-async def create_repo(homepage=None, description=None, *, org_name, repo_name,
-                      app, logger):
+async def create_repo(
+    homepage=None,
+    description=None,
+    allow_squash_merge=False,
+    allow_merge_commit=True,
+    allow_rebase_merge=False,
+    delete_branch_on_merge=True,
+    *, org_name, repo_name, app, logger
+):
     """Create a new repository on GitHub.
 
     This function wraps the `/orgs{/org_name}/repos
@@ -39,7 +48,11 @@ async def create_repo(homepage=None, description=None, *, org_name, repo_name,
         'auto_init': False,
         # Defaults for LSST
         'has_projects': False,
-        'has_wiki': False
+        'has_wiki': False,
+        'allow_squash_merge': allow_squash_merge,
+        'allow_merge_commit': allow_merge_commit,
+        'allow_rebase_merge': allow_rebase_merge,
+        'delete_branch_on_merge': delete_branch_on_merge,
     }
     if homepage is not None:
         data['homepage'] = homepage
@@ -77,6 +90,38 @@ async def get_authenticated_user(*, app, logger):
     ghclient = app['templatebot-aide/gidgethub']
     response = await ghclient.getitem('/user')
     return response
+
+
+def add_auth_to_remote(*, remote, app):
+    """Add username and password authentication to the URL of a GitPython
+    remote.
+
+    Parameters
+    ----------
+    remote
+        A GitPython remote instance.
+    app : `aiohttp.web.Application`
+        The app instance, for configuration.
+
+    Returns
+    -------
+    remote
+        The modified remote instance (same as the parameter).
+    """
+    # Modify the repo URL to include auth info in the netloc
+    # <user>:<token>@github.com
+    bottoken = app['templatebot-aide/githubToken']
+    botuser = app['templatebot-aide/githubUsername']
+
+    remote_url = [u for u in remote.urls][0]
+    url_parts = urllib.parse.urlparse(remote_url)
+    authed_url_parts = list(url_parts)
+    # The [1] index is the netloc.
+    authed_url_parts[1] = f'{botuser}:{bottoken}@{url_parts[1]}'
+    authed_remote_url = urllib.parse.urlunparse(authed_url_parts)
+    remote.set_url(authed_remote_url, old_url=remote_url)
+
+    return remote
 
 
 async def create_pr(maintainer_can_modify=True, draft=False, *, owner, repo,

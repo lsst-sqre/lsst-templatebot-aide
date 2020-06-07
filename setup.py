@@ -34,13 +34,13 @@ install_requires = [
     'cachetools==3.1.0',
     'pycryptodomex==3.8.0',
     'ruamel.yaml==0.15.89',
-    'GitPython==2.1.11',
+    'GitPython==3.1.3',
 ]
 
 # Test dependencies
 tests_require = [
-    'pytest==4.2.0',
-    'pytest-flake8==1.0.4',
+    'pytest==5.4.3',
+    'pytest-flake8==1.0.6',
     'aiohttp-devtools==0.11',
 ]
 tests_require += install_requires

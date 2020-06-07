@@ -2,6 +2,16 @@
 Change log
 ##########
 
+0.2.0 (2020-06-05)
+==================
+
+- This release updates the technote handlers to work with the new GitHub Actions templates.
+  This greatly simplifies the technote post rendering handler since all the work related to Travis CI (registering a repo and encrypting credentials) is deleted.
+  LaTeX-based technotes still have a post-rendering step that PRs the submodule.
+  See https://github.com/lsst/templates/pull/80.
+
+- Updates GitPython to 3.1.3 (to resolve an inconsistent GitDB dependency) and updates the testing stack to pytest 5.4.3 and pytest-flake8 to 1.0.6.
+
 0.1.0 (2019-11-29)
 ==================
 
