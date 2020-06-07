@@ -113,7 +113,7 @@ async def handle_technote_prerender(*, event, schema, app, logger):
             await post_message(
                 text=(
                     "I've set up the technote on _LSST the Docs._ Your "
-                    f"document will appear at {ltd_product['published_url']} ",
+                    f"document will appear at {ltd_product['published_url']} "
                     "in a few minutes after the GitHub Actions build finishes."
                 ),
                 channel=event['slack_channel'],

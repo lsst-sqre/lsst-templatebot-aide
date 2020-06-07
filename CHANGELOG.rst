@@ -2,6 +2,13 @@
 Change log
 ##########
 
+0.2.1 (2020-06-06)
+==================
+
+- Fix the confirmation message on technote creation (the multi line string was accidentally turned into a sequence of strings).
+
+- Centralize the image tag version in ``kustomization.yaml``, which is easier to maintain on a release-by-release basis than the deployment YAML.
+
 0.2.0 (2020-06-05)
 ==================
 
