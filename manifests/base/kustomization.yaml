@@ -4,3 +4,7 @@ kind: Kustomization
 resources:
   - configmap.yaml
   - deployment.yaml
+
+images:
+  - name: lsstsqre/templatebot-aide
+    newTag: 0.2.1
