@@ -12,6 +12,7 @@ from .handlers import (
     handle_technote_prerender,
     handle_document_prerender,
     handle_technote_postrender,
+    handle_document_postrender,
 )
 
 
@@ -154,6 +155,13 @@ async def route_event(*, event, app, schema_id, schema, topic, partition,
         if event['template_name'] in TECHNOTE_TEMPLATES:
             # Start post-render for technote projects
             await handle_technote_postrender(
+                event=event,
+                schema=schema,
+                app=app,
+                logger=logger)
+        elif event['template_name'] in DOCUSHARE_TEMPLATES:
+            # Start post-render for document projects
+            await handle_document_postrender(
                 event=event,
                 schema=schema,
                 app=app,
