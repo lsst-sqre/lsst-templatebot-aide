@@ -41,7 +41,8 @@ async def get_ltd_token(*, app, logger):
     return data['token']
 
 
-async def register_ltd_product(*, slug, title, github_repo, app, logger):
+async def register_ltd_product(*, slug, title, github_repo, app, logger,
+                               main_mode="git_refs"):
     """Register a new product on LSST the Docs.
 
     Parameters
@@ -57,6 +58,9 @@ async def register_ltd_product(*, slug, title, github_repo, app, logger):
     logger
         A `structlog` logger instance with bound context related to the
         Kafka event.
+    main_mode : `str`
+        The tracking mode of the main edition. See
+        https://ltd-keeper.lsst.io/editions.html#tracking-modes
 
     Returns
     -------
@@ -73,6 +77,7 @@ async def register_ltd_product(*, slug, title, github_repo, app, logger):
         'title': title,
         'slug': slug,
         'doc_repo': github_repo,
+        'main_mode': main_mode,
         'bucket_name': 'lsst-the-docs',
         'root_domain': 'lsst.io',
         'root_fastly_domain': 'n.global-ssl.fastly.net',

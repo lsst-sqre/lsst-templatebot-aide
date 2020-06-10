@@ -85,7 +85,8 @@ async def handle_document_prerender(*, event, schema, app, logger):
             title=event['variables']['title'],
             github_repo=repo_info['html_url'],
             app=app,
-            logger=logger)
+            logger=logger,
+            main_mode="lsst_doc")
         if event['slack_username'] is not None:
             await post_message(
                 text=(
