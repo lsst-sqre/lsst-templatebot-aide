@@ -8,7 +8,7 @@ import gidgethub
 
 from templatebotaide.lsstthedocs import register_ltd_product
 from templatebotaide.github import create_repo
-from templatebotaide.slack import post_message
+from templatebotaide.slack import post_message, get_user_info
 
 
 async def handle_document_prerender(*, event, schema, app, logger):
@@ -156,6 +156,10 @@ async def handle_document_prerender(*, event, schema, app, logger):
                 app=app
             )
 
+    # Get the user's identity to use as the initial author
+    user_info = await get_user_info(
+        user=event['slack_username'], logger=logger, app=app)
+
     # Send a response message to templatebot-render_ready
     # The render_ready message is based on the prerender payload, but now
     # we can inject resolved variables
@@ -166,6 +170,9 @@ async def handle_document_prerender(*, event, schema, app, logger):
     if 'serial_number' not in render_ready_message['variables'] or \
             render_ready_message['variables']['serial_number'] == "":
         render_ready_message['variables']['serial_number'] = serial_number
+    if 'author' not in render_ready_message['variables']:
+        render_ready_message['variables']['author'] \
+            = user_info['user']['real_name']
     render_ready_message['github_repo'] = repo_info['html_url']
     render_ready_message['retry_count'] = 0
     now = datetime.datetime.now(datetime.timezone.utc)
