@@ -24,7 +24,7 @@ Technical notes have a special process for assigning document handles through
 GitHub repository names in a given organization.
 """
 
-DOCUSHARE_TEMPLATES = ('test_report',)
+DOCUSHARE_TEMPLATES = ('test_report', 'latex_lsstdoc')
 """Names of templates in https://github.com/lsst/templates that correspond to
 DocuShare-centric documents.
 

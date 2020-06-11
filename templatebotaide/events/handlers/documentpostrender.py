@@ -23,7 +23,7 @@ async def handle_document_postrender(*, event, schema, app, logger):
     """
     logger.debug('In handle_document_postrender', event_data=event)
 
-    if event['template_name'] in ('test_report'):
+    if event['template_name'] in ('test_report', 'latex_lsstdoc'):
         # Handle the configuration PR for a LaTeX technote to add the
         # lsst-texmf submodule.
         try:
@@ -44,7 +44,7 @@ async def handle_document_postrender(*, event, schema, app, logger):
                 )
         except Exception:
             logger.exception(
-                'Failed to PR latex submodules for technote',
+                'Failed to PR latex submodules for document',
                 github_repo=event['github_repo'])
             if event['slack_username'] is not None:
                 await post_message(

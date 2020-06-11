@@ -1,7 +1,9 @@
 __all__ = ['handle_document_prerender']
 
-from copy import deepcopy
 import datetime
+import re
+from copy import deepcopy
+
 import gidgethub
 
 from templatebotaide.lsstthedocs import register_ltd_product
@@ -32,15 +34,55 @@ async def handle_document_prerender(*, event, schema, app, logger):
     """
     logger.info('In handle_document_prerender', event_data=event)
 
+    # In the latex_lsstdoc template, the series and serial_number are
+    # determined from the handle. This logic attempts to match this metadata
+    # and extract it, if necessary and possible.
+    if 'handle' in event['variables']:
+        handle = event['variables']['handle']  # for latex_lsstdoc
+        handle_match = re.match(
+            r"(?P<series>[A-Z]+)-(?P<serial_number>[0-9]+)",
+            handle
+        )
+    else:
+        handle = None
+        handle_match = None
+
+    if 'series' in event['variables'] and event['variables']['series']:
+        series = event['variables']['series']
+    elif handle_match:
+        series = handle_match['series']
+    else:
+        series = ""
+
+    if 'serial_number' in event['variables'] \
+            and event['variables']['serial_number']:
+        serial_number = event['variables']['serial_number']
+    elif handle_match:
+        serial_number = handle_match['serial_number']
+    else:
+        serial_number = ""
+
+    if handle is None:
+        if series and serial_number:
+            handle = f"{series}-{serial_number}"
+        else:
+            await post_message(
+                text=f"<@{event['slack_username']}>, oh no! "
+                     "I could not determine the document's handle."
+                     "I can't do anything to fix it. Could you ask someone at "
+                     "SQuaRE to look into it?",
+                channel=event['slack_channel'],
+                thread_ts=event['slack_thread_ts'],
+                logger=logger,
+                app=app
+            )
+            raise RuntimeError(
+                "Could not determine the document handle."
+            )
+
     org_name = event['variables']['github_org']
-    repo_name = (
-        f"{event['variables']['series']}-"
-        f"{event['variables']['serial_number']}"
-    )
-    ltd_slug = (
-        f"{event['variables']['series'].lower()}-"
-        f"{event['variables']['serial_number']}"
-    )
+    repo_name = handle
+    ltd_slug = repo_name.lower()
     ltd_url = f"https://{ltd_slug}.lsst.io"
 
     try:
@@ -90,8 +132,8 @@ async def handle_document_prerender(*, event, schema, app, logger):
         if event['slack_username'] is not None:
             await post_message(
                 text=(
-                    "I've set up the technote on _LSST the Docs._ Your "
-                    f"document will appear at {ltd_product['published_url']} ",
+                    "I've set up the document on _LSST the Docs._ Your "
+                    f"document will appear at {ltd_product['published_url']} "
                     "in a few minutes after the GitHub Actions build finishes."
                 ),
                 channel=event['slack_channel'],
@@ -118,6 +160,12 @@ async def handle_document_prerender(*, event, schema, app, logger):
     # The render_ready message is based on the prerender payload, but now
     # we can inject resolved variables
     render_ready_message = deepcopy(event)
+    if 'series' not in render_ready_message['variables'] or \
+            render_ready_message['variables']['series'] == "":
+        render_ready_message['variables']['series'] = series
+    if 'serial_number' not in render_ready_message['variables'] or \
+            render_ready_message['variables']['serial_number'] == "":
+        render_ready_message['variables']['serial_number'] = serial_number
     render_ready_message['github_repo'] = repo_info['html_url']
     render_ready_message['retry_count'] = 0
     now = datetime.datetime.now(datetime.timezone.utc)
