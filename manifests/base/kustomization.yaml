@@ -7,4 +7,4 @@ resources:
 
 images:
   - name: lsstsqre/templatebot-aide
-    newTag: tickets-DM-25331
+    newTag: 0.3.0

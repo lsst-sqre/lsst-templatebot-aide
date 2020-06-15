@@ -2,6 +2,14 @@
 Change log
 ##########
 
+0.3.0 (2020-06-15)
+==================
+
+- Add support for document templates where the name of the GitHub repository is known in advance by the user (because the document handle was assigned by DocuShare, for example).
+  These templates are specifically the ``latex_lsstdoc`` and ``test_report`` templates.
+
+- Refactor the code for creating a PR with the ``lsst-texmf`` submodule since both the ``technote_latex`` and new ``latex_lsstdoc`` / ``test_report`` templates make use of the functionality.
+
 0.2.1 (2020-06-06)
 ==================
 
