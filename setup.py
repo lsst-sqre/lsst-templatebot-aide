@@ -28,8 +28,8 @@ install_requires = [
     'colorama==0.4.1',  # used by structlog
     'click>=6.7,<7.0',
     'fastavro==0.21.16',
-    'kafkit==0.1.1',
-    'aiokafka==0.5.2',
+    'kafkit==0.2.0b3',
+    'aiokafka==0.6.0',
     'gidgethub==3.1.0',
     'cachetools==3.1.0',
     'pycryptodomex==3.8.0',

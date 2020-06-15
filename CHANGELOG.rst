@@ -2,6 +2,14 @@
 Change log
 ##########
 
+0.3.1 (2020-06-15)
+==================
+
+- Update to kafkit 0.2.0b3.
+
+- Update to aiokafka 0.6.0.
+  This should resolve the issue of unhandled UnknownMemberId exceptions causing consumers to unexpectedly drop their connection to the Kafka brokers.
+
 0.3.0 (2020-06-15)
 ==================
 
