@@ -1,14 +1,13 @@
-"""Post-render handler for technotes."""
+"""Post-render handler for DocuShare-managed LaTeX documents."""
 
-__all__ = ('handle_technote_postrender',)
+__all__ = ['handle_document_postrender']
 
 from templatebotaide.slack import post_message
 from templatebotaide.events.handlers.utilities import pr_latex_submodules
 
 
-async def handle_technote_postrender(*, event, schema, app, logger):
-    """Handle a ``templatebot-postrender`` event for a technote-type of
-    template.
+async def handle_document_postrender(*, event, schema, app, logger):
+    """Handle a ``templatebot-postrender`` event for a document.
 
     Parameters
     ----------
@@ -22,9 +21,9 @@ async def handle_technote_postrender(*, event, schema, app, logger):
         A `structlog` logger instance with bound context related to the
         Kafka event.
     """
-    logger.debug('In handle_technote_postrender', event_data=event)
+    logger.debug('In handle_document_postrender', event_data=event)
 
-    if event['template_name'] in ('technote_latex', 'technote_aastex'):
+    if event['template_name'] in ('test_report', 'latex_lsstdoc'):
         # Handle the configuration PR for a LaTeX technote to add the
         # lsst-texmf submodule.
         try:
@@ -36,7 +35,7 @@ async def handle_technote_postrender(*, event, schema, app, logger):
             if event['slack_username'] is not None:
                 await post_message(
                     text=f"I've submitted a PR with deployment credentials. "
-                         "Go and merge it to finish your technote's set up!"
+                         "Go and merge it to finish your document's set up!"
                          f"\n\n{pr_data['html_url']}",
                     channel=event['slack_channel'],
                     thread_ts=event['slack_thread_ts'],
@@ -45,7 +44,7 @@ async def handle_technote_postrender(*, event, schema, app, logger):
                 )
         except Exception:
             logger.exception(
-                'Failed to PR latex submodules for technote',
+                'Failed to PR latex submodules for document',
                 github_repo=event['github_repo'])
             if event['slack_username'] is not None:
                 await post_message(
