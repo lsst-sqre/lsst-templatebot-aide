@@ -1,5 +1,6 @@
 __all__ = ('handle_generic_prerender',)
 
+import re
 from copy import deepcopy
 import datetime
 import gidgethub
@@ -35,6 +36,10 @@ async def handle_generic_prerender(*, event, schema, app, logger):
     if event['template_name'] == 'stack_package':
         org_name = event['variables']['github_org']
         repo_name = event['variables']['package_name']
+
+        # Ensure that the repo name has no whitespace
+        repo_name = re.sub(r"\s", "", repo_name)
+        event['variables']['package_name'] = repo_name
     else:
         # Try to work with a general case where github_org and name are the
         # cookiecutter variables for the repo's org and name on GitHub.
@@ -48,6 +53,10 @@ async def handle_generic_prerender(*, event, schema, app, logger):
         except KeyError:
             logger.error('event does not have a variables.name key')
             raise
+
+        # Ensure that the repo name has no whitespace
+        repo_name = re.sub(r"\s", "", repo_name)
+        event['variables']['name'] = repo_name
 
     try:
         repo_info = await create_repo(
