@@ -2,6 +2,15 @@
 Change log
 ##########
 
+0.3.2 (2020-06-16)
+==================
+
+- The pre-render handlers now clean user content:
+
+  - The ``title`` field of documents and technotes no longer contains any line breaks as this isn't compatible with the title's use for a GitHub repository description.
+
+  - The name of a repository no longer contains any whitespace.
+
 0.3.1 (2020-06-15)
 ==================
 
