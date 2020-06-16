@@ -1,8 +1,9 @@
 """Common handler workflows and other utilities."""
 
-__all__ = ['pr_latex_submodules']
+__all__ = ['pr_latex_submodules', 'clean_string_whitespace']
 
 import asyncio
+import re
 from tempfile import TemporaryDirectory
 from pathlib import Path
 
@@ -99,3 +100,15 @@ async def pr_latex_submodules(*, event, app, logger):
         logger.debug('Finished pushing lsst-texmf PR', branch=new_branch_name)
 
     return pr_response
+
+
+def clean_string_whitespace(text: str) -> str:
+    """Clean whitespace from text that should only be a single paragraph.
+
+    1. Apply ``str.strip`` method
+    2. Apply regular expression substitution of the ``\\s`` whitespace
+       character group with `` `` (a single whitespace).
+    """
+    text = text.strip()
+    text = re.sub(r"\s", " ", text)  # replace all kinds of whitespace
+    return text

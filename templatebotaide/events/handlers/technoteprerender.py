@@ -8,6 +8,7 @@ import gidgethub
 from templatebotaide.lsstthedocs import register_ltd_product
 from templatebotaide.github import create_repo
 from templatebotaide.slack import post_message, get_user_info
+from templatebotaide.events.handlers.utilities import clean_string_whitespace
 
 
 async def handle_technote_prerender(*, event, schema, app, logger):
@@ -32,6 +33,11 @@ async def handle_technote_prerender(*, event, schema, app, logger):
     event.
     """
     logger.info('In handle_technote_prerender', event_data=event)
+
+    # Clean user input
+    event['variables']['title'] = clean_string_whitespace(
+        event['variables']['title']
+    )
 
     # Get data from the event (user dialog input)
     org_name = event['variables']['github_org']

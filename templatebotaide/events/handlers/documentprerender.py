@@ -9,6 +9,7 @@ import gidgethub
 from templatebotaide.lsstthedocs import register_ltd_product
 from templatebotaide.github import create_repo
 from templatebotaide.slack import post_message, get_user_info
+from templatebotaide.events.handlers.utilities import clean_string_whitespace
 
 
 async def handle_document_prerender(*, event, schema, app, logger):
@@ -33,6 +34,11 @@ async def handle_document_prerender(*, event, schema, app, logger):
     event.
     """
     logger.info('In handle_document_prerender', event_data=event)
+
+    # Clean user input
+    event['variables']['title'] = clean_string_whitespace(
+        event['variables']['title']
+    )
 
     # In the latex_lsstdoc template, the series and serial_number are
     # determined from the handle. This logic attempts to match this metadata
