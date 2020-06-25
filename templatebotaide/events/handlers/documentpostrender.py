@@ -34,9 +34,12 @@ async def handle_document_postrender(*, event, schema, app, logger):
             )
             if event['slack_username'] is not None:
                 await post_message(
-                    text=f"I've submitted a PR with deployment credentials. "
-                         "Go and merge it to finish your document's set up!"
-                         f"\n\n{pr_data['html_url']}",
+                    text=(
+                        f"<@{event['slack_username']}>, I've submitted a "
+                        "pull request adding the `lsst-texmf` submodule. "
+                        "It's optional but recommended:\n\n"
+                        f"{pr_data['html_url']}"
+                    ),
                     channel=event['slack_channel'],
                     thread_ts=event['slack_thread_ts'],
                     logger=logger,
