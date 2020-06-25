@@ -190,7 +190,7 @@ async def handle_document_prerender(*, event, schema, app, logger):
         if event['slack_username'] is not None:
             await post_message(
                 text="Something went wrong setting up _LSST the Docs._ I will "
-                     "continue to configure the technote, but docs won't be "
+                     "continue to configure the document, but docs won't be "
                      "available right away. Contact SQuaRE for help.",
                 channel=event['slack_channel'],
                 thread_ts=event['slack_thread_ts'],
