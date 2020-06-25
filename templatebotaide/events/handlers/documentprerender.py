@@ -12,6 +12,22 @@ from templatebotaide.slack import post_message, get_user_info
 from templatebotaide.events.handlers.utilities import clean_string_whitespace
 
 
+KNOWN_TECHNOTE_HANDLES = set([
+    "DMTN",
+    "ITTN",
+    "RTN",
+    "PSTN",
+    "SITCOMTN",
+    "SMTN",
+    "SQR",
+    "TSTN",
+])
+"""A set of handles that are known to belong to technotes.
+
+We use this set to help alert users that they may be using the wrong template.
+"""
+
+
 async def handle_document_prerender(*, event, schema, app, logger):
     """Handle a ``templatebot-prerender`` event for a document template where
     the repository is known and needs to be registered with LSST the Docs.
@@ -85,6 +101,26 @@ async def handle_document_prerender(*, event, schema, app, logger):
             raise RuntimeError(
                 "Could not determine the document handle."
             )
+
+    if series in KNOWN_TECHNOTE_HANDLES:
+        await post_message(
+            text=(
+                f"<@{event['slack_username']}>, it looks like the "
+                "document is actually a technote. You'll need to use a "
+                "technote-specific template.\n\n"
+                "Run `create project` again, "
+                "but select a *Technote ...* template instead.\n\n"
+                "This is the title you entered:\n\n"
+                f"> {event['variables']['title']}"
+            ),
+            channel=event['slack_channel'],
+            thread_ts=event['slack_thread_ts'],
+            logger=logger,
+            app=app
+        )
+        raise RuntimeError(
+            "Aborting documentprerender because series is a technote."
+        )
 
     org_name = event['variables']['github_org']
     repo_name = handle
