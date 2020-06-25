@@ -174,9 +174,10 @@ async def handle_document_prerender(*, event, schema, app, logger):
         if event['slack_username'] is not None:
             await post_message(
                 text=(
-                    "I've set up the document on _LSST the Docs._ Your "
-                    f"document will appear at {ltd_product['published_url']} "
-                    "in a few minutes after the GitHub Actions build finishes."
+                    f"<@{event['slack_username']}>, the documentation URL "
+                    f"will be:\n\n{ltd_product['published_url']}.\n\n"
+                    "_That page will give a 404 error until the first build "
+                    "completes. Hold tight!_"
                 ),
                 channel=event['slack_channel'],
                 thread_ts=event['slack_thread_ts'],
