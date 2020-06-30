@@ -12,6 +12,22 @@ from templatebotaide.slack import post_message, get_user_info
 from templatebotaide.events.handlers.utilities import clean_string_whitespace
 
 
+KNOWN_TECHNOTE_HANDLES = set([
+    "DMTN",
+    "ITTN",
+    "RTN",
+    "PSTN",
+    "SITCOMTN",
+    "SMTN",
+    "SQR",
+    "TSTN",
+])
+"""A set of handles that are known to belong to technotes.
+
+We use this set to help alert users that they may be using the wrong template.
+"""
+
+
 async def handle_document_prerender(*, event, schema, app, logger):
     """Handle a ``templatebot-prerender`` event for a document template where
     the repository is known and needs to be registered with LSST the Docs.
@@ -86,6 +102,26 @@ async def handle_document_prerender(*, event, schema, app, logger):
                 "Could not determine the document handle."
             )
 
+    if series in KNOWN_TECHNOTE_HANDLES:
+        await post_message(
+            text=(
+                f"<@{event['slack_username']}>, it looks like the "
+                "document is actually a technote. You'll need to use a "
+                "technote-specific template.\n\n"
+                "Run `create project` again, "
+                "but select a *Technote ...* template instead.\n\n"
+                "This is the title you entered:\n\n"
+                f"> {event['variables']['title']}"
+            ),
+            channel=event['slack_channel'],
+            thread_ts=event['slack_thread_ts'],
+            logger=logger,
+            app=app
+        )
+        raise RuntimeError(
+            "Aborting documentprerender because series is a technote."
+        )
+
     org_name = event['variables']['github_org']
     repo_name = handle
     ltd_slug = repo_name.lower()
@@ -138,9 +174,10 @@ async def handle_document_prerender(*, event, schema, app, logger):
         if event['slack_username'] is not None:
             await post_message(
                 text=(
-                    "I've set up the document on _LSST the Docs._ Your "
-                    f"document will appear at {ltd_product['published_url']} "
-                    "in a few minutes after the GitHub Actions build finishes."
+                    f"<@{event['slack_username']}>, the documentation URL "
+                    f"will be:\n\n{ltd_product['published_url']}.\n\n"
+                    "_That page will give a 404 error until the first build "
+                    "completes. Hold tight!_"
                 ),
                 channel=event['slack_channel'],
                 thread_ts=event['slack_thread_ts'],
@@ -154,7 +191,7 @@ async def handle_document_prerender(*, event, schema, app, logger):
         if event['slack_username'] is not None:
             await post_message(
                 text="Something went wrong setting up _LSST the Docs._ I will "
-                     "continue to configure the technote, but docs won't be "
+                     "continue to configure the document, but docs won't be "
                      "available right away. Contact SQuaRE for help.",
                 channel=event['slack_channel'],
                 thread_ts=event['slack_thread_ts'],

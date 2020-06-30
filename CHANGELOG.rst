@@ -2,6 +2,12 @@
 Change log
 ##########
 
+0.3.3 (2020-06-30)
+==================
+
+- Verify that the handle for a generic doc is not a technote, giving the user feedback in Slack.
+- Improve Slack message copy.
+
 0.3.2 (2020-06-16)
 ==================
 
