@@ -1,7 +1,6 @@
-"""Workflows for LSST the Docs.
-"""
+"""Workflows for LSST the Docs."""
 
-__all__ = ('get_ltd_token', 'register_ltd_product')
+__all__ = ["get_ltd_token", "register_ltd_product"]
 
 import aiohttp
 
@@ -30,19 +29,21 @@ async def get_ltd_token(*, app, logger):
     - ``templatebot-aide/ltdUsername``
     - ``templatebot-aide/ltdPassword``
     """
-    http_session = app['api.lsst.codes/httpSession']
-    url = 'https://keeper.lsst.codes/token'
+    http_session = app["api.lsst.codes/httpSession"]
+    url = "https://keeper.lsst.codes/token"
     auth = aiohttp.BasicAuth(
-        app['templatebot-aide/ltdUsername'],
-        password=app['templatebot-aide/ltdPassword'])
+        app["templatebot-aide/ltdUsername"],
+        password=app["templatebot-aide/ltdPassword"],
+    )
     async with http_session.get(url, auth=auth) as response:
         response.raise_for_status()
         data = await response.json()
-    return data['token']
+    return data["token"]
 
 
-async def register_ltd_product(*, slug, title, github_repo, app, logger,
-                               main_mode="git_refs"):
+async def register_ltd_product(
+    *, slug, title, github_repo, app, logger, main_mode="git_refs"
+):
     """Register a new product on LSST the Docs.
 
     Parameters
@@ -74,26 +75,23 @@ async def register_ltd_product(*, slug, title, github_repo, app, logger,
     `get_ltd_token`.
     """
     data = {
-        'title': title,
-        'slug': slug,
-        'doc_repo': github_repo,
-        'main_mode': main_mode,
-        'bucket_name': 'lsst-the-docs',
-        'root_domain': 'lsst.io',
-        'root_fastly_domain': 'n.global-ssl.fastly.net',
+        "title": title,
+        "slug": slug,
+        "doc_repo": github_repo,
+        "main_mode": main_mode,
+        "bucket_name": "lsst-the-docs",
+        "root_domain": "lsst.io",
+        "root_fastly_domain": "n.global-ssl.fastly.net",
     }
 
-    http_session = app['api.lsst.codes/httpSession']
-    url = 'https://keeper.lsst.codes/products/'
-    logger.debug(
-        'Registering product on LTD',
-        url=url,
-        payload=data)
+    http_session = app["api.lsst.codes/httpSession"]
+    url = "https://keeper.lsst.codes/products/"
+    logger.debug("Registering product on LTD", url=url, payload=data)
     token = await get_ltd_token(app=app, logger=logger)
     auth = aiohttp.BasicAuth(token)
     async with http_session.post(url, json=data, auth=auth) as response:
         response.raise_for_status()
-        product_url = response.headers['Location']
+        product_url = response.headers["Location"]
 
     # Get data about the product
     async with http_session.get(product_url, auth=auth) as response:

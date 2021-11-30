@@ -1,19 +1,18 @@
-"""Administrative command line interface.
-"""
+"""Administrative command line interface."""
 
-__all__ = ('main', 'help', 'run')
-
-from aiohttp.web import run_app
 import click
+from aiohttp.web import run_app
 
 from templatebotaide.app import create_app
 
+__all__ = ("main", "help", "run")
+
 # Add -h as a help shortcut option
-CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
+CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
 
 @click.group(context_settings=CONTEXT_SETTINGS)
-@click.version_option(message='%(version)s')
+@click.version_option(message="%(version)s")
 @click.pass_context
 def main(ctx):
     """templatebot-aide
@@ -26,11 +25,10 @@ def main(ctx):
 
 
 @main.command()
-@click.argument('topic', default=None, required=False, nargs=1)
+@click.argument("topic", default=None, required=False, nargs=1)
 @click.pass_context
 def help(ctx, topic, **kw):
-    """Show help for any command.
-    """
+    """Show help for any command."""
     # The help command implementation is taken from
     # https://www.burgundywall.com/post/having-click-help-subcommand
     if topic is None:
@@ -41,12 +39,10 @@ def help(ctx, topic, **kw):
 
 @main.command()
 @click.option(
-    '--port', default=8080, type=int,
-    help='Port to run the application on.'
+    "--port", default=8080, type=int, help="Port to run the application on."
 )
 @click.pass_context
 def run(ctx, port):
-    """Run the application (for production).
-    """
+    """Run the application (for production)."""
     app = create_app()
     run_app(app, port=port)

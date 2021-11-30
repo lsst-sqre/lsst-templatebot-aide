@@ -1,13 +1,13 @@
-"""Workflows for using the Slack API that are common to many handlers.
-"""
-
-__all__ = ('post_message',)
+"""Workflows for using the Slack API that are common to many handlers."""
 
 import yarl
 
+__all__ = ["post_message"]
 
-async def post_message(body=None, text=None, channel=None, thread_ts=None,
-                       *, logger, app):
+
+async def post_message(
+    body=None, text=None, channel=None, thread_ts=None, *, logger, app
+):
     """Send a ``chat.postMessage`` request to Slack.
 
     Parameters
@@ -34,36 +34,33 @@ async def post_message(body=None, text=None, channel=None, thread_ts=None,
         if text is None or channel is None:
             raise ValueError(
                 'If "body" is not set, then set "text" and "channel" '
-                'for post_message')
+                "for post_message"
+            )
 
         body = {
             "token": app["templatebot-aide/slackToken"],
             "channel": channel,
-            "text": text
+            "text": text,
         }
         if thread_ts is not None:
-            body['thread_ts'] = thread_ts
+            body["thread_ts"] = thread_ts
 
-    httpsession = app['api.lsst.codes/httpSession']
+    httpsession = app["api.lsst.codes/httpSession"]
     headers = {
-        'content-type': 'application/json; charset=utf-8',
-        'authorization': f'Bearer {app["templatebot-aide/slackToken"]}'
+        "content-type": "application/json; charset=utf-8",
+        "authorization": f'Bearer {app["templatebot-aide/slackToken"]}',
     }
 
-    logger.info(
-        'chat.postMessage',
-        body=body)
+    logger.info("chat.postMessage", body=body)
 
-    url = 'https://slack.com/api/chat.postMessage'
+    url = "https://slack.com/api/chat.postMessage"
     async with httpsession.post(url, json=body, headers=headers) as response:
         response_json = await response.json()
-        logger.debug(
-            'chat.postMessage reponse',
-            response=response_json)
-    if not response_json['ok']:
+        logger.debug("chat.postMessage reponse", response=response_json)
+    if not response_json["ok"]:
         logger.error(
-            'Got a Slack error from chat.postMessage',
-            contents=response_json)
+            "Got a Slack error from chat.postMessage", contents=response_json
+        )
 
 
 async def get_user_info(*, user, logger, app):
@@ -78,26 +75,22 @@ async def get_user_info(*, user, logger, app):
     app
         Application instance.
     """
-    httpsession = app['api.lsst.codes/httpSession']
+    httpsession = app["api.lsst.codes/httpSession"]
     headers = {
-        'content-type': 'application/x-www-form-urlencoded; charset=utf-8',
-        'authorization': f'Bearer {app["templatebot-aide/slackToken"]}'
+        "content-type": "application/x-www-form-urlencoded; charset=utf-8",
+        "authorization": f'Bearer {app["templatebot-aide/slackToken"]}',
     }
-    url = 'https://slack.com/api/users.info'
-    body = {
-        'token': app["templatebot-aide/slackToken"],
-        'user': user
-    }
-    encoded_body = yarl.URL.build(query=body).query_string.encode('utf-8')
-    async with httpsession.post(url, data=encoded_body, headers=headers) \
-            as response:
+    url = "https://slack.com/api/users.info"
+    body = {"token": app["templatebot-aide/slackToken"], "user": user}
+    encoded_body = yarl.URL.build(query=body).query_string.encode("utf-8")
+    async with httpsession.post(
+        url, data=encoded_body, headers=headers
+    ) as response:
         response_json = await response.json()
-        logger.debug(
-            'users.info reponse',
-            response=response_json)
-    if not response_json['ok']:
+        logger.debug("users.info reponse", response=response_json)
+    if not response_json["ok"]:
         logger.error(
-            'Got a Slack error from users.info',
-            response=response_json)
+            "Got a Slack error from users.info", response=response_json
+        )
 
     return response_json

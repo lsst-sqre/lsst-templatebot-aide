@@ -1,11 +1,11 @@
-"""Context-local logger.
-"""
-
-__all__ = ('response_logger', 'get_response_logger')
+"""Context-local logger."""
 
 import contextvars
 
-response_logger = contextvars.ContextVar('response_logger')
+__all__ = ["response_logger", "get_response_logger"]
+
+
+response_logger = contextvars.ContextVar("response_logger")
 """A context-local structlog logger.
 
 This logger is set by templatebot.middleware.logging.
