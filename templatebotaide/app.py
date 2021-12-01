@@ -4,7 +4,6 @@ __all__ = ["create_app"]
 
 import asyncio
 import logging
-import os
 import ssl
 import sys
 from pathlib import Path
@@ -185,13 +184,15 @@ async def configure_kafka_ssl(app):
         raise RuntimeError("Kafka protocol is SSL but client key is not set")
 
     if client_ca_cert_path is not None:
-        logger.info("Contatenating Kafka client CA and certificate files.")
+        logger.info("Concatenating Kafka client CA and certificate files.")
         # Need to contatenate the client cert and CA certificates. This is
         # typical for Strimzi-based Kafka clusters.
         client_ca = Path(client_ca_cert_path).read_text()
         client_cert = Path(client_cert_path).read_text()
         new_client_cert = "\n".join([client_cert, client_ca])
-        new_client_cert_path = Path(os.getenv("APPDIR", ".")) / "client.crt"
+        new_client_cert_path = (
+            app["templatebot-aide/certCacheDir"] / "client.crt"
+        )
         new_client_cert_path.write_text(new_client_cert)
         client_cert_path = str(new_client_cert_path)
 

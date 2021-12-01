@@ -1,6 +1,7 @@
 """Configuration collection."""
 
 import os
+from pathlib import Path
 
 __all__ = ["create_config"]
 
@@ -60,6 +61,10 @@ def create_config():
     c["templatebot-aide/clientCaPath"] = os.getenv("KAFKA_CLIENT_CA")
     c["templatebot-aide/clientCertPath"] = os.getenv("KAFKA_CLIENT_CERT")
     c["templatebot-aide/clientKeyPath"] = os.getenv("KAFKA_CLIENT_KEY")
+
+    c["templatebot-aide/certCacheDir"] = Path(
+        os.getenv("TEMPLATEBOT_CERT_CACHE", ".")
+    )
 
     # Slack token (use same config variable as SQRBOTJR)
     c["templatebot-aide/slackToken"] = os.getenv("SLACK_TOKEN")
