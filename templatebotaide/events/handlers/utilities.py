@@ -63,7 +63,7 @@ async def pr_latex_submodules(*, event, app, logger):
             "lsst-texmf",
             path="lsst-texmf",
             url="https://github.com/lsst/lsst-texmf.git",
-            branch="master",
+            branch="main",
         )
         repo.index.add([str(Path(tmpdir_name) / ".gitmodules")])
         repo.index.commit(
@@ -94,7 +94,7 @@ async def pr_latex_submodules(*, event, app, logger):
             title="Add lsst-texmf submodule",
             body=pr_body,
             head=new_branch_name,
-            base="master",
+            base="main",
             app=app,
             logger=logger,
         )
