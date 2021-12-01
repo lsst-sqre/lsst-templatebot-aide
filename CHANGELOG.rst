@@ -2,6 +2,13 @@
 Change log
 ##########
 
+0.4.0 (2021-12-01)
+==================
+
+- Change PR for lsst-texmf to use main branches, not master.
+- Update to GitHub Actions from Travis CI
+- Modernize packaging to meet SQuaRE's current standards (tox, pre-commit, formatting with Black and isort, pip-tools compiled dependencies and multi-stage docker image build).
+
 0.3.3 (2020-06-30)
 ==================
 
