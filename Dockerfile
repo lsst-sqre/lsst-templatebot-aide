@@ -65,4 +65,4 @@ USER appuser
 EXPOSE 8080
 
 # Run the application.
-CMD ["templatebot", "run", "--port", "8080"]
+CMD ["templatebot-aide", "run", "--port", "8080"]
