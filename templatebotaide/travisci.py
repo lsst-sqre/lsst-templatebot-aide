@@ -1,29 +1,32 @@
-"""Workflows for Travis CI.
-"""
+"""Workflows for Travis CI."""
 
-__all__ = ('get_current_user', 'activate_travis', 'sync_travis_account',
-           'get_generated_travis_repo_key', 'encrypt_travis_secret',
-           'make_travis_repo_url')
+__all__ = [
+    "get_current_user",
+    "activate_travis",
+    "sync_travis_account",
+    "get_generated_travis_repo_key",
+    "encrypt_travis_secret",
+    "make_travis_repo_url",
+]
 
 import asyncio
 import base64
 
-import Cryptodome.PublicKey.RSA
 import Cryptodome.Cipher.PKCS1_v1_5
+import Cryptodome.PublicKey.RSA
 import uritemplate
 
 
 def _get_travis_endpoint_type(org=None, slug=None):
     if org is None and slug is None:
-        raise ValueError(
-            'Either `slug` or `org` must be specified.')
+        raise ValueError("Either `slug` or `org` must be specified.")
     elif slug is None:
-        org = slug.split('/')[0]
+        org = slug.split("/")[0]
 
-    if org in ('lsst', 'lsst-sims'):
-        return 'org'
+    if org in ("lsst", "lsst-sims"):
+        return "org"
     else:
-        return 'com'
+        return "com"
 
 
 def _get_travis_url(slug=None, org=None):
@@ -36,24 +39,24 @@ def _get_travis_url(slug=None, org=None):
         The API URL, either ``https://api.travis-ci.org`` or
         ``https://api.travis-ci.com``
     """
-    if _get_travis_endpoint_type(org=org, slug=slug) == 'com':
-        return 'https://api.travis-ci.com'
+    if _get_travis_endpoint_type(org=org, slug=slug) == "com":
+        return "https://api.travis-ci.com"
     else:
-        return 'https://api.travis-ci.org'
+        return "https://api.travis-ci.org"
 
 
 def _get_travis_token(*, app, org=None, slug=None):
-    if _get_travis_endpoint_type(org=org, slug=slug) == 'com':
-        return app['templatebot-aide/travisTokenCom']
+    if _get_travis_endpoint_type(org=org, slug=slug) == "com":
+        return app["templatebot-aide/travisTokenCom"]
     else:
-        return app['templatebot-aide/travisToken']
+        return app["templatebot-aide/travisToken"]
 
 
 def make_travis_headers(*, token):
     return {
-        'Travis-API-Version': '3',
-        'User-Agent': 'lsst-templatebot-aide',
-        'Authorization': 'token ' + token
+        "Travis-API-Version": "3",
+        "User-Agent": "lsst-templatebot-aide",
+        "Authorization": "token " + token,
     }
 
 
@@ -79,20 +82,18 @@ async def activate_travis(*, slug, app, logger):
     """
     host = _get_travis_url(slug=slug)
     headers = make_travis_headers(token=_get_travis_token(app=app, slug=slug))
-    http_session = app['api.lsst.codes/httpSession']
+    http_session = app["api.lsst.codes/httpSession"]
 
-    url = uritemplate.expand(
-        host + '/repo{/slug}/activate',
-        slug=slug
-    )
+    url = uritemplate.expand(host + "/repo{/slug}/activate", slug=slug)
     async with http_session.post(url, headers=headers) as response:
         response_data = await response.json()
         logger.debug(
-            'Activating repository',
+            "Activating repository",
             slug=slug,
             url=response.url,
             status=response.status,
-            message=response_data)
+            message=response_data,
+        )
 
 
 async def get_current_user(*, slug, app, logger):
@@ -117,12 +118,12 @@ async def get_current_user(*, slug, app, logger):
     """
     host = _get_travis_url(slug=slug)
     headers = make_travis_headers(token=_get_travis_token(app=app, slug=slug))
-    http_session = app['api.lsst.codes/httpSession']
+    http_session = app["api.lsst.codes/httpSession"]
 
-    url = host + '/user'
+    url = host + "/user"
     async with http_session.get(url, headers=headers) as response:
         data = await response.json()
-        logger.debug('Got Travis user data', data=data)
+        logger.debug("Got Travis user data", data=data)
         return data
 
 
@@ -142,38 +143,35 @@ async def sync_travis_account(*, slug, app, logger):
     """
     host = _get_travis_url(slug=slug)
     headers = make_travis_headers(token=_get_travis_token(app=app, slug=slug))
-    http_session = app['api.lsst.codes/httpSession']
+    http_session = app["api.lsst.codes/httpSession"]
 
     # Check if there was already an existing user sync event
     while True:
         user_data = await get_current_user(slug=slug, app=app, logger=logger)
-        if user_data['is_syncing'] is True:
-            await asyncio.sleep(10.)
-            logger.debug('Travis is already syncing')
+        if user_data["is_syncing"] is True:
+            await asyncio.sleep(10.0)
+            logger.debug("Travis is already syncing")
         else:
             break
 
-    user_id = str(user_data['id'])
+    user_id = str(user_data["id"])
 
     # Start a new sync
-    url = uritemplate.expand(
-        host + '/user{/user_id}/sync',
-        user_id=user_id
-    )
+    url = uritemplate.expand(host + "/user{/user_id}/sync", user_id=user_id)
     async with http_session.post(url, headers=headers) as response:
         message = await response.json()
-        logger.debug('Triggered Travis CI sync', body=message)
+        logger.debug("Triggered Travis CI sync", body=message)
 
     # Wait for the sync to complete
-    await asyncio.sleep(10.)
+    await asyncio.sleep(10.0)
     while True:
         user_data = await get_current_user(slug=slug, app=app, logger=logger)
-        if user_data['is_syncing'] is True:
-            await asyncio.sleep(10.)
-            logger.debug('Travis is currently syncing')
+        if user_data["is_syncing"] is True:
+            await asyncio.sleep(10.0)
+            logger.debug("Travis is currently syncing")
         else:
             break
-    await asyncio.sleep(10.)
+    await asyncio.sleep(10.0)
 
 
 async def get_generated_travis_repo_key(*, slug, app, logger):
@@ -203,15 +201,14 @@ async def get_generated_travis_repo_key(*, slug, app, logger):
     """
     host = _get_travis_url(slug=slug)
     headers = make_travis_headers(token=_get_travis_token(app=app, slug=slug))
-    http_session = app['api.lsst.codes/httpSession']
+    http_session = app["api.lsst.codes/httpSession"]
     url = uritemplate.expand(
-        host + '/repo{/slug}/key_pair/generated',
-        slug=slug
+        host + "/repo{/slug}/key_pair/generated", slug=slug
     )
-    logger.debug('Public key url', url=url)
+    logger.debug("Public key url", url=url)
     async with http_session.get(url, headers=headers) as response:
         text = await response.text()
-        logger.debug('Public key response', data=text)
+        logger.debug("Public key response", data=text)
         response.raise_for_status()
         data = await response.json()
     return data
@@ -243,9 +240,7 @@ def encrypt_travis_secret(*, public_key, secret):
     rsa_key = Cryptodome.PublicKey.RSA.import_key(public_key)
     rsa_cipher = Cryptodome.Cipher.PKCS1_v1_5.new(rsa_key)
 
-    return base64.b64encode(
-        rsa_cipher.encrypt(secret.encode('utf-8'))
-    )
+    return base64.b64encode(rsa_cipher.encrypt(secret.encode("utf-8")))
 
 
 def make_travis_repo_url(slug):
@@ -264,8 +259,8 @@ def make_travis_repo_url(slug):
     url : `str`
         Repository URL on Travis.
     """
-    if _get_travis_endpoint_type(slug=slug) == 'com':
-        host = 'https://travis-ci.com'
+    if _get_travis_endpoint_type(slug=slug) == "com":
+        host = "https://travis-ci.com"
     else:
-        host = 'https://travis-ci.org'
-    return '/'.join((host, slug))
+        host = "https://travis-ci.org"
+    return "/".join((host, slug))

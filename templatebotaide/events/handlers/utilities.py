@@ -1,15 +1,15 @@
 """Common handler workflows and other utilities."""
 
-__all__ = ['pr_latex_submodules', 'clean_string_whitespace']
-
 import asyncio
 import re
-from tempfile import TemporaryDirectory
 from pathlib import Path
+from tempfile import TemporaryDirectory
 
 import git
 
 from templatebotaide import github
+
+__all__ = ["pr_latex_submodules", "clean_string_whitespace"]
 
 
 async def pr_latex_submodules(*, event, app, logger):
@@ -25,18 +25,21 @@ async def pr_latex_submodules(*, event, app, logger):
         A `structlog` logger instance with bound context related to the
         Kafka event.
     """
-    github_repo_url = event['github_repo']
-    github_repo_url_parts = event['github_repo'].split('/')
+    github_repo_url = event["github_repo"]
+    github_repo_url_parts = event["github_repo"].split("/")
     repo_owner = github_repo_url_parts[-2]
     repo_name = github_repo_url_parts[-1]
-    ltd_slug = '-'.join((event['variables']['series'].lower(),
-                         event['variables']['serial_number']))
-    ltd_url = f'https://{ltd_slug}.lsst.io'
+    ltd_slug = "-".join(
+        (
+            event["variables"]["series"].lower(),
+            event["variables"]["serial_number"],
+        )
+    )
+    ltd_url = f"https://{ltd_slug}.lsst.io"
 
     # The comitter is the bot
-    github_user = await github.get_authenticated_user(
-        app=app, logger=logger)
-    author = git.Actor(github_user['name'], github_user['email'])
+    github_user = await github.get_authenticated_user(app=app, logger=logger)
+    author = git.Actor(github_user["name"], github_user["email"])
 
     with TemporaryDirectory() as tmpdir_name:
         repo = git.Repo.clone_from(github_repo_url, to_path=tmpdir_name)
@@ -46,8 +49,9 @@ async def pr_latex_submodules(*, event, app, logger):
         origin = github.add_auth_to_remote(remote=origin, app=app)
 
         # Create the branch
-        new_branch_name = 'u/{user}/config'.format(
-            user=app['templatebot-aide/githubUsername'])
+        new_branch_name = "u/{user}/config".format(
+            user=app["templatebot-aide/githubUsername"]
+        )
         new_branch = repo.create_head(new_branch_name)
         repo.head.reference = new_branch
         # reset the index and working tree to match the pointed-to commit
@@ -56,25 +60,23 @@ async def pr_latex_submodules(*, event, app, logger):
         # Add the lsst-texmf submodule
         git.objects.submodule.base.Submodule.add(
             repo,
-            'lsst-texmf',
-            path='lsst-texmf',
-            url='https://github.com/lsst/lsst-texmf.git',
-            branch='master'
+            "lsst-texmf",
+            path="lsst-texmf",
+            url="https://github.com/lsst/lsst-texmf.git",
+            branch="main",
         )
-        repo.index.add([
-            str(Path(tmpdir_name) / '.gitmodules')
-        ])
-        repo.index.commit('Add lsst-texmf submodule',
-                          author=author,
-                          committer=author)
+        repo.index.add([str(Path(tmpdir_name) / ".gitmodules")])
+        repo.index.commit(
+            "Add lsst-texmf submodule", author=author, committer=author
+        )
 
-        origin.push(refspec=f'{new_branch_name}:{new_branch_name}')
+        origin.push(refspec=f"{new_branch_name}:{new_branch_name}")
 
-        await asyncio.sleep(1.)
+        await asyncio.sleep(1.0)
 
-        if ltd_url.endswith('/'):
-            ltd_url.rstrip('/')
-        branch_url = ltd_url + "/v/" + new_branch_name.replace('/', '-')
+        if ltd_url.endswith("/"):
+            ltd_url.rstrip("/")
+        branch_url = ltd_url + "/v/" + new_branch_name.replace("/", "-")
         dashboard_url = ltd_url + "/v"
         pr_body = (
             "This pull request adds the "
@@ -89,15 +91,15 @@ async def pr_latex_submodules(*, event, app, logger):
         pr_response = await github.create_pr(
             owner=repo_owner,
             repo=repo_name,
-            title='Add lsst-texmf submodule',
+            title="Add lsst-texmf submodule",
             body=pr_body,
             head=new_branch_name,
-            base='master',
+            base="main",
             app=app,
-            logger=logger
+            logger=logger,
         )
 
-        logger.debug('Finished pushing lsst-texmf PR', branch=new_branch_name)
+        logger.debug("Finished pushing lsst-texmf PR", branch=new_branch_name)
 
     return pr_response
 

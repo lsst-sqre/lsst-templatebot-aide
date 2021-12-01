@@ -1,5 +1,4 @@
-"""Test for the technote prerender handler.
-"""
+"""Test for the technote prerender handler."""
 
 from templatebotaide.events.handlers.technoteprerender import propose_number
 

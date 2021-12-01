@@ -15,67 +15,75 @@ spec:
         app: templatebot-aide
     spec:
       containers:
-      - name: templatebot-aide-app
-        image: lsstsqre/templatebot-aide
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 8080
-        env:
-        - name: SLACK_TOKEN
-          valueFrom:
-            secretKeyRef:
-              name: templatebot-aide
-              key: SLACK_TOKEN
-        - name: TEMPLATEBOT_GITHUB_TOKEN
-          valueFrom:
-            secretKeyRef:
-              name: templatebot-aide
-              key: TEMPLATEBOT_GITHUB_TOKEN
-        - name: TEMPLATEBOT_GITHUB_USER
-          valueFrom:
-            secretKeyRef:
-              name: templatebot-aide
-              key: TEMPLATEBOT_GITHUB_USER
-        - name: TEMPLATEBOT_LTD_AWS_ID
-          valueFrom:
-            secretKeyRef:
-              name: templatebot-aide
-              key: TEMPLATEBOT_LTD_AWS_ID
-        - name: TEMPLATEBOT_LTD_AWS_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: templatebot-aide
-              key: TEMPLATEBOT_LTD_AWS_SECRET
-        - name: TEMPLATEBOT_LTD_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: templatebot-aide
-              key: TEMPLATEBOT_LTD_USERNAME
-        - name: TEMPLATEBOT_LTD_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: templatebot-aide
-              key: TEMPLATEBOT_LTD_PASSWORD
-        - name: TEMPLATEBOT_LTD_USERNAME_EMBED
-          valueFrom:
-            secretKeyRef:
-              name: templatebot-aide
-              key: TEMPLATEBOT_LTD_USERNAME_EMBED
-        - name: TEMPLATEBOT_LTD_PASSWORD_EMBED
-          valueFrom:
-            secretKeyRef:
-              name: templatebot-aide
-              key: TEMPLATEBOT_LTD_PASSWORD_EMBED
-        - name: TEMPLATEBOT_TRAVIS_TOKEN_COM
-          valueFrom:
-            secretKeyRef:
-              name: templatebot-aide
-              key: TEMPLATEBOT_TRAVIS_TOKEN_COM
-        - name: TEMPLATEBOT_TRAVIS_TOKEN_ORG
-          valueFrom:
-            secretKeyRef:
-              name: templatebot-aide
-              key: TEMPLATEBOT_TRAVIS_TOKEN_ORG
-        envFrom:
-        - configMapRef:
-            name: templatebot-aide
+        - name: templatebot-aide-app
+          image: lsstsqre/templatebot-aide
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SLACK_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: templatebot-aide
+                  key: SLACK_TOKEN
+            - name: TEMPLATEBOT_GITHUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: templatebot-aide
+                  key: TEMPLATEBOT_GITHUB_TOKEN
+            - name: TEMPLATEBOT_GITHUB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: templatebot-aide
+                  key: TEMPLATEBOT_GITHUB_USER
+            - name: TEMPLATEBOT_LTD_AWS_ID
+              valueFrom:
+                secretKeyRef:
+                  name: templatebot-aide
+                  key: TEMPLATEBOT_LTD_AWS_ID
+            - name: TEMPLATEBOT_LTD_AWS_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: templatebot-aide
+                  key: TEMPLATEBOT_LTD_AWS_SECRET
+            - name: TEMPLATEBOT_LTD_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: templatebot-aide
+                  key: TEMPLATEBOT_LTD_USERNAME
+            - name: TEMPLATEBOT_LTD_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: templatebot-aide
+                  key: TEMPLATEBOT_LTD_PASSWORD
+            - name: TEMPLATEBOT_LTD_USERNAME_EMBED
+              valueFrom:
+                secretKeyRef:
+                  name: templatebot-aide
+                  key: TEMPLATEBOT_LTD_USERNAME_EMBED
+            - name: TEMPLATEBOT_LTD_PASSWORD_EMBED
+              valueFrom:
+                secretKeyRef:
+                  name: templatebot-aide
+                  key: TEMPLATEBOT_LTD_PASSWORD_EMBED
+            - name: TEMPLATEBOT_TRAVIS_TOKEN_COM
+              valueFrom:
+                secretKeyRef:
+                  name: templatebot-aide
+                  key: TEMPLATEBOT_TRAVIS_TOKEN_COM
+            - name: TEMPLATEBOT_TRAVIS_TOKEN_ORG
+              valueFrom:
+                secretKeyRef:
+                  name: templatebot-aide
+                  key: TEMPLATEBOT_TRAVIS_TOKEN_ORG
+            - name: TEMPLATEBOT_CERT_CACHE
+              value: "/etc/templatebot-cert-cache"
+          envFrom:
+            - configMapRef:
+                name: templatebot-aide
+          volumeMounts:
+            - name: "cert-cache"
+              mountPath: "/etc/templatebot-cert-cache"
+      volumes:
+        - name: "cert-cache"
+          emptyDir: {}

@@ -1,2 +1,1 @@
-"""Application handlers for requests.
-"""
+"""Application handlers for requests."""

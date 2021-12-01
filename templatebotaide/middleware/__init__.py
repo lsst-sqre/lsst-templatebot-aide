@@ -1,9 +1,8 @@
-"""aiohttp.web middleware for the application.
-"""
-
-__all__ = ('setup_middleware',)
+"""aiohttp.web middleware for the application."""
 
 from .logging import bind_logger
+
+__all__ = ["setup_middleware"]
 
 
 def setup_middleware(app):
