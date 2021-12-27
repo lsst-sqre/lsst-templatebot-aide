@@ -99,9 +99,9 @@ asttokens==2.0.5 \
     --hash=sha256:0844691e88552595a6f4a4281a9f7f79b8dd45ca4ccea82e5e05b4bbdb76705c \
     --hash=sha256:9a54c114f02c7a9480d56550932546a3f1fe71d8a02f1bc7ccd0ee3ee35cf4d5
     # via devtools
-async-timeout==4.0.1 \
-    --hash=sha256:a22c0b311af23337eb05fcf05a8b51c3ea53729d46fb5460af62bee033cec690 \
-    --hash=sha256:b930cb161a39042f9222f6efb7301399c87eeab394727ec5437924a36d6eef51
+async-timeout==4.0.2 \
+    --hash=sha256:2163e1640ddb52b7a8c80d0a67a08587e5d245cc9c553a74a847056bc2976b15 \
+    --hash=sha256:8ca1e4fcf50d07413d66d1a5e416e42cfdf5851c981d679a09851a6853383b3c
     # via
     #   -c requirements/main.txt
     #   aiohttp
@@ -192,13 +192,14 @@ documenteer[pipelines]==0.6.9 \
     --hash=sha256:5cbe4858611548aa2492fe8b35fd6a03a1026510493ebd4d5857f279fd02e174 \
     --hash=sha256:cb90ff96842af6ad4ed82a0c746c52c348aa015a4b753183f02c5ea7e73e1ca7
     # via -r requirements/dev.in
-docutils==0.17.1 \
-    --hash=sha256:686577d2e4c32380bb50cbb22f575ed742d58168cee37e99117a854bcd88f125 \
-    --hash=sha256:cf316c8370a737a022b72b56874f6602acf974a37a9fba42ec2876387549fc61
+docutils==0.16 \
+    --hash=sha256:0c5b78adfbf7762415433f5515cd5c9e762339e23369dbe8000d84a4bf4ab3af \
+    --hash=sha256:c2de3a60e9e7d07be26b7f2b00ca0309c207e06c100f9cc2a94931fc75a478fc
     # via
     #   pybtex-docutils
     #   sphinx
     #   sphinx-click
+    #   sphinx-jinja
     #   sphinxcontrib-bibtex
 executing==0.8.2 \
     --hash=sha256:32fc6077b103bd19e6494a72682d66d5763cf20a106d5aa7c5ccbea4e47b0df7 \
@@ -314,6 +315,7 @@ jinja2==3.0.3 \
     # via
     #   numpydoc
     #   sphinx
+    #   sphinx-jinja
 latexcodec==2.0.1 \
     --hash=sha256:2aa2551c373261cefe2ad3a8953a6d6533e68238d180eb4bb91d7964adb3fe9a \
     --hash=sha256:c277a193638dc7683c4c30f6684e3db728a06efb0dc9cf346db8bd0aa6c5d271
@@ -612,21 +614,22 @@ sphinx==4.3.2 \
     #   numpydoc
     #   sphinx-automodapi
     #   sphinx-click
+    #   sphinx-jinja
     #   sphinx-prompt
     #   sphinxcontrib-autoprogram
     #   sphinxcontrib-bibtex
     #   sphinxcontrib-doxylink
-sphinx-automodapi==0.13 \
-    --hash=sha256:e1019336df7f7f0bcbf848eff7b84e7bef71691a57d8b5bda9107a2a046a226a \
-    --hash=sha256:f9ebc9c10597f3aab1d93e5a8b1829903eee7c64f5bafb0cf71fd40e5c7d95f0
+sphinx-automodapi==0.14.0 \
+    --hash=sha256:5f89cf29b5f151c24f1e505d6eea5edeca316710907745450fe0c15d3032a612 \
+    --hash=sha256:6fadf79954920f5686da434032239296209d4598316e8548cd62b5d2098ec6d7
     # via documenteer
 sphinx-click==3.0.2 \
     --hash=sha256:29896dd12bfaacb566a8c7af2e2b675d010d69b0c5aad3b52495d4842358b15b \
     --hash=sha256:8529a02bea8cd2cd47daba2f71d7935c727c89d70baabec7fca31af49a0c379f
     # via documenteer
-sphinx-jinja==1.1.1 \
-    --hash=sha256:372406fe557be7c3f000ddd0ff130e7bb2d83f47df02e255fd24fe62d81ee143 \
-    --hash=sha256:683190af496a241c411e56cba45965ea4f8740d1f5d2e13c27409223b7a90633
+sphinx-jinja==1.2.1 \
+    --hash=sha256:68fac1df4e4c9e06d18ff7d2eaf6fa967b4b9a80d7e11ecc5576581b52f38edb \
+    --hash=sha256:fec9e871205f000963e57b388076d427a888e54c2bf7ad50becb0d755db2a10b
     # via documenteer
 sphinx-prompt==1.5.0 \
     --hash=sha256:fa4e90d8088b5a996c76087d701fc7e31175f8b9dc4aab03a507e45051067162
@@ -680,7 +683,6 @@ typing-extensions==4.0.1 \
     --hash=sha256:7f001e5ac290a0c0401508864c7ec868be4e701886d5b573a9528ed3973d9d3b
     # via
     #   -c requirements/main.txt
-    #   async-timeout
     #   gitpython
 urllib3==1.26.7 \
     --hash=sha256:4987c65554f7a2dbf30c18fd48778ef124af6fab771a377103da0585e2336ece \
