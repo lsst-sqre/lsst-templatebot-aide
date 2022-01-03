@@ -81,9 +81,9 @@ aiohttp==3.8.1 \
     #   -c requirements/main.txt
     #   aiohttp-devtools
     #   pytest-aiohttp
-aiohttp-devtools==0.13.1 \
-    --hash=sha256:70dbab32e2234296ddc995cacc06acf6b7ee2cf2ac1be62d4e12e0d333e63f00 \
-    --hash=sha256:da9490c56671ed3920ceb98fc558065dec573c771ca17d500467b245b63f0f9d
+aiohttp-devtools==1.0.post0 \
+    --hash=sha256:1847ce92e6e8ca1ed5dc603864f4faecdfa40b6b5aeb5193f05cafd28d3ce3e3 \
+    --hash=sha256:f46a87b250a84bf8edca21c8b6991dc2b6145cdf0af8a08b73f5c92d48d85f01
     # via -r requirements/dev.in
 aiosignal==1.2.0 \
     --hash=sha256:26e62109036cd181df6e6ad646f91f0dcfd05fe16d0cb924138ff2ab75d64e3a \
@@ -105,9 +105,9 @@ async-timeout==4.0.2 \
     # via
     #   -c requirements/main.txt
     #   aiohttp
-attrs==21.2.0 \
-    --hash=sha256:149e90d6d8ac20db7a955ad60cf0e6881a3f20d37096140088356da6c716b0b1 \
-    --hash=sha256:ef6aaac3ca6cd92904cdd0d83f629a15f18053ec84e6432106f7a4d04ae4f5fb
+attrs==21.4.0 \
+    --hash=sha256:2d27e3784d7a565d36ab851fe94887c5eccd6a463168875832a1be79c82828b4 \
+    --hash=sha256:626ba8234211db98e869df76230a137c4c40a12d72445c45d5f5b716f076e2fd
     # via
     #   -c requirements/main.txt
     #   aiohttp
@@ -499,9 +499,9 @@ pybtex-docutils==1.0.1 \
     --hash=sha256:42e379bd1d5473b9fd7be4b3a64ca291d4fdc9ae6c6854e52d1d0157c955bbfa \
     --hash=sha256:d53aa0c31dc94d61fd30ea3f06c749e6f510f9ff0e78cb2765a9300f173d8626
     # via sphinxcontrib-bibtex
-pygments==2.10.0 \
-    --hash=sha256:b8e67fe6af78f492b3c4b3e2970c0624cbf08beb1e493b2c99b9fa1b67a20380 \
-    --hash=sha256:f398865f7eb6874156579fdf36bc840a03cab64d1cde9e93d68f46a425ec52c6
+pygments==2.11.1 \
+    --hash=sha256:59b895e326f0fb0d733fd28c6839bd18ad0687ba20efc26d4277fd1d30b971f4 \
+    --hash=sha256:9135c1af61eec0f650cd1ea1ed8ce298e54d56bcd8cc2ef46edd7702c171337c
     # via
     #   aiohttp-devtools
     #   sphinx
@@ -627,9 +627,9 @@ sphinx-click==3.0.2 \
     --hash=sha256:29896dd12bfaacb566a8c7af2e2b675d010d69b0c5aad3b52495d4842358b15b \
     --hash=sha256:8529a02bea8cd2cd47daba2f71d7935c727c89d70baabec7fca31af49a0c379f
     # via documenteer
-sphinx-jinja==1.2.1 \
-    --hash=sha256:68fac1df4e4c9e06d18ff7d2eaf6fa967b4b9a80d7e11ecc5576581b52f38edb \
-    --hash=sha256:fec9e871205f000963e57b388076d427a888e54c2bf7ad50becb0d755db2a10b
+sphinx-jinja==1.3.0 \
+    --hash=sha256:688e954515a08e03b643e57d244826de46817d261277c49905f463fffa6942e9 \
+    --hash=sha256:9f0eed7311d70b53a289c815e21b736db2d8fc1ff6b14198dfd8496ab6060122
     # via documenteer
 sphinx-prompt==1.5.0 \
     --hash=sha256:fa4e90d8088b5a996c76087d701fc7e31175f8b9dc4aab03a507e45051067162
