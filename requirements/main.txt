@@ -206,9 +206,9 @@ cffi==1.15.0 \
     # via
     #   cryptography
     #   pycares
-charset-normalizer==2.0.9 \
-    --hash=sha256:1eecaa09422db5be9e29d7fc65664e6c33bd06f9ced7838578ba40d58bdf3721 \
-    --hash=sha256:b0b883e8e874edfdece9c28f314e3dd5badf067342e42fb162203335ae61aa2c
+charset-normalizer==2.0.10 \
+    --hash=sha256:876d180e9d7432c5d1dfd4c5d26b72f099d503e8fcc0feb7532c9289be60fcbd \
+    --hash=sha256:cb957888737fc0bbcd78e3df769addb41fd1ff8cf950dc9e7ad7793f1bf44455
     # via aiohttp
 click==8.0.3 \
     --hash=sha256:353f466495adaeb40b6b5f592f9f91cb22372351c84caeb068132442a4518ef3 \
@@ -240,22 +240,23 @@ cryptography==36.0.1 \
     --hash=sha256:ebc15b1c22e55c4d5566e3ca4db8689470a0ca2babef8e3a9ee057a8b82ce4b1 \
     --hash=sha256:ec63da4e7e4a5f924b90af42eddf20b698a70e58d86a72d943857c4c6045b3ee
     # via pyjwt
-fastavro==1.4.8 \
-    --hash=sha256:0852fc0a2db7b08087c3d24962c1c3b73b02d27833ab779fe3737b3cc5d61967 \
-    --hash=sha256:09799e1ec32495c716abc6eddbd637e5b0cc5f5e1351fc61ffff0bd834b65f8a \
-    --hash=sha256:13f1b7a92e014a4b43e6b2e08eec043b0e3fb1e713769d6585b658ad9fbe7593 \
-    --hash=sha256:1ad54968eb42d5970247a99561e4876bb51e10717de89d0a2586dec107f85ef1 \
-    --hash=sha256:355764158d31c7f4e0fba7be42ed9cfd228db5043efd1e2aeeb987c961a09d3a \
-    --hash=sha256:7ec4913adeed150e0981d598dd5aa49daa76abda7a1c3a1295aae6d7b0f42729 \
-    --hash=sha256:8abce3e99ddbfd9613c41e97b292d43745a2fc311343f7ef58c6517aab4b71e5 \
-    --hash=sha256:98dbfabf42fd11d0bdf6f7af231043447c5e5f6d68427a8cbef31ef33739c0a4 \
-    --hash=sha256:9f6f63594a5d4e7aa3d123715aa5430bcb6cf36e9b1c079efdfa5f687385c0f2 \
-    --hash=sha256:d0126e8fff7294854157d3f2d0b9c056fbe24a941b01bef48badcf608feb241e \
-    --hash=sha256:d4ede7a358e880fd89b4fbdd5ea9d22a7935b3b56198d5402705ffee45d17f26 \
-    --hash=sha256:d704eece6437bf98a5bcd5d79f87f6f76a0df07bb050380d9aae528e8da2a469 \
-    --hash=sha256:dc95fcdbaa72c28c9444244d08fb7f02ff5495a8814244173549e90f7bd9733c \
-    --hash=sha256:eea2974a75f5c15691d37a0ccd505cb61e38580b38b0bdd17cc051b0414902fe \
-    --hash=sha256:fda0dbbb3f4f104c16aa1a7ddd278bbd1f215ca300e63cee2cfd28f614675686
+fastavro==1.4.9 \
+    --hash=sha256:000b70c5109a61bdbfddeb2821a506de8f5333f243c608cbced61d44657d6c2f \
+    --hash=sha256:1fc9c95b7c1d59c5a2d29be21075870a122152cf927d84587dafc96da6b2ac3d \
+    --hash=sha256:2e64a77c529b638e89a879ff0211debfab5b2d114c26a2af29c81f6b013f395a \
+    --hash=sha256:32b804aa6920d80c0e94e1180d480f28f56c4b901849bd80ed180851752b5ce6 \
+    --hash=sha256:3759bdc77009ee1e2e76fc9f58b951c05c00a8600ef9ddbff59fee3cb0c9e235 \
+    --hash=sha256:37a77a1b5347a06416e236c77027c750aaeda29ef8189aa456eb2a2571274b43 \
+    --hash=sha256:6a9cd6d8471beb4020b4126fd04150ed7295f74ae7234d0dc9205b55c193851e \
+    --hash=sha256:927fd6148a8dd9646c129c0a0e8571aea829abc3cba04a3d5a4010a866934f4c \
+    --hash=sha256:9a6ada2d6e133a2319438248c2e023b6735747b249c5a79d5f08f9d431e5d226 \
+    --hash=sha256:b98ef2bdb123b95945aa6d69d6a7d79f211df3274b2dd7786da7852ddec964d0 \
+    --hash=sha256:be3fec387eb2cdc9627060b5ae0690542c687dddc951b63fa11203553769ae5e \
+    --hash=sha256:c7537e4df7782b03b9761e9338cef9fc7bfcc41100ab93c36c5c60fa568e724a \
+    --hash=sha256:ce2c7747ce958115388872db0756d3eeb0d796084eea9b46dc3758ef32c4d952 \
+    --hash=sha256:d6ccb77604903a0308316e696bb65a8943361af5f757d10985689656c9bce6ed \
+    --hash=sha256:f9b04acaf06b16218b47985e92d8daa98c1116d58f3cff81a5b3cf39cef9afc0 \
+    --hash=sha256:fa9d8b47e0533c84152332ad491bb63bbae76a8a7a0df1caa821e0cbebf0fb70
     # via
     #   -r requirements/main.in
     #   kafkit
@@ -343,9 +344,9 @@ gitdb==4.0.9 \
     --hash=sha256:8033ad4e853066ba6ca92050b9df2f89301b8fc8bf7e9324d412a63f8bf1a8fd \
     --hash=sha256:bac2fd45c0a1c9cf619e63a90d62bdc63892ef92387424b855792a6cabe789aa
     # via gitpython
-gitpython==3.1.24 \
-    --hash=sha256:dc0a7f2f697657acc8d7f89033e8b1ea94dd90356b2983bca89dc8d2ab3cc647 \
-    --hash=sha256:df83fdf5e684fef7c6ee2c02fc68a5ceb7e7e759d08b694088d0cacb4eba59e5
+gitpython==3.1.25 \
+    --hash=sha256:4f8b0e51713642b83f1eb10136d36a7f2c5278d188c5ae82b144cb1f4e848f0c \
+    --hash=sha256:b923e8952c2fe0d70b129fddd8511acc90b3070c8dddb20d86ca9911a5d0c248
     # via -r requirements/main.in
 idna==3.3 \
     --hash=sha256:84d9dd047ffa80596e0f246e2eab0b391788b0503584e8945f2368256d2735ff \
@@ -508,9 +509,9 @@ pyjwt[crypto]==2.3.0 \
     --hash=sha256:b888b4d56f06f6dcd777210c334e69c737be74755d3e5e9ee3fe67dc18a0ee41 \
     --hash=sha256:e0c4bb8d9f0af0c7f5b1ec4c5036309617d03d56932877f2f7a0beeb5318322f
     # via gidgethub
-ruamel.yaml==0.17.19 \
-    --hash=sha256:92ac00b312c9a83ff3253a8f7b86dfe6f9996b4082b103af84b8df99175945bc \
-    --hash=sha256:b9ce9a925d0f0c35a1dbba56b40f253c53cd526b0fa81cf7b1d24996f28fb1d7
+ruamel.yaml==0.17.20 \
+    --hash=sha256:4b8a33c1efb2b443a93fcaafcfa4d2e445f8e8c29c528d9f5cdafb7cc9e4004c \
+    --hash=sha256:810eef9c46523a3f77479c66267a4708255ebe806a2d540078408c2227f011af
     # via -r requirements/main.in
 ruamel.yaml.clib==0.2.6 \
     --hash=sha256:0847201b767447fc33b9c235780d3aa90357d20dd6108b92be544427bea197dd \
@@ -547,10 +548,6 @@ structlog==21.5.0 \
     --hash=sha256:68c4c29c003714fe86834f347cb107452847ba52414390a7ee583472bde00fc9 \
     --hash=sha256:fd7922e195262b337da85c2a91c84be94ccab1f8fd1957bd6986f6904e3761c8
     # via -r requirements/main.in
-typing-extensions==4.0.1 \
-    --hash=sha256:4ca091dea149f945ec56afb48dae714f21e8692ef22a395223bcd328961b6a0e \
-    --hash=sha256:7f001e5ac290a0c0401508864c7ec868be4e701886d5b573a9528ed3973d9d3b
-    # via gitpython
 uritemplate==4.1.1 \
     --hash=sha256:4346edfc5c3b79f694bccd6d6099a322bbeb628dbf2cd86eea55a456ce5124f0 \
     --hash=sha256:830c08b8d99bdd312ea4ead05994a38e8936266f84b9a7878232db50b044e02e
