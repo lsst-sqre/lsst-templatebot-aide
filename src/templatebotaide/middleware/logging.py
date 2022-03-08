@@ -3,17 +3,21 @@ request information bound to it.
 """
 
 import uuid
+from typing import Awaitable, Callable, List
 
 import structlog
 from aiohttp import web
+from aiohttp.web.web_response import Request, StreamResponse
 
 from templatebotaide.logging import response_logger
 
-__all__ = []
+Handler = Callable[[Request], Awaitable[StreamResponse]]
+
+__all__: List[str] = []
 
 
 @web.middleware
-async def bind_logger(request, handler):
+async def bind_logger(request: Request, handler: Handler) -> StreamResponse:
     """Bind request metadata to the context-local structlog logger.
 
     This is an aiohttp.web middleware.

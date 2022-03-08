@@ -7,8 +7,10 @@
 
 -c main.txt
 
-pytest
-pytest-coverage
 aiohttp-devtools
-pytest-aiohttp
 documenteer[pipelines]
+mypy
+pytest
+pytest-aiohttp
+pytest-coverage
+types-cachetools

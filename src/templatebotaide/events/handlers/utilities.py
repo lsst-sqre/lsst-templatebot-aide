@@ -4,15 +4,20 @@ import asyncio
 import re
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from typing import Any, Dict
 
 import git
+from aiohttp.web import Application
+from structlog.stdlib import BoundLogger
 
 from templatebotaide import github
 
 __all__ = ["pr_latex_submodules", "clean_string_whitespace"]
 
 
-async def pr_latex_submodules(*, event, app, logger):
+async def pr_latex_submodules(
+    *, event: Dict[str, Any], app: Application, logger: BoundLogger
+) -> Dict[str, Any]:
     """Create a GitHub Pull Request that adds the lsst-texmf submodule.
 
     Parameters
@@ -53,9 +58,8 @@ async def pr_latex_submodules(*, event, app, logger):
             user=app["templatebot-aide/githubUsername"]
         )
         new_branch = repo.create_head(new_branch_name)
-        repo.head.reference = new_branch
         # reset the index and working tree to match the pointed-to commit
-        repo.head.reset(index=True, working_tree=True)
+        repo.head.reset(new_branch, index=True, working_tree=True)
 
         # Add the lsst-texmf submodule
         git.objects.submodule.base.Submodule.add(

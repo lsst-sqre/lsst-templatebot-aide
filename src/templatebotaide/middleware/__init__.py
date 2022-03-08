@@ -1,11 +1,13 @@
 """aiohttp.web middleware for the application."""
 
+from aiohttp.web import Application
+
 from .logging import bind_logger
 
 __all__ = ["setup_middleware"]
 
 
-def setup_middleware(app):
+def setup_middleware(app: Application) -> None:
     """Add middleware to the application.
 
     Notes

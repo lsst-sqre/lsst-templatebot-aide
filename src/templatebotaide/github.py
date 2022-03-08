@@ -1,6 +1,11 @@
 """Workflows for GitHub operations common to many handlers."""
 
 import urllib
+from typing import Any, Dict, Optional
+
+from aiohttp.web import Application
+from git.remote import Remote
+from structlog.stdlib import BoundLogger
 
 __all__ = [
     "create_repo",
@@ -11,18 +16,18 @@ __all__ = [
 
 
 async def create_repo(
-    homepage=None,
-    description=None,
-    allow_squash_merge=False,
-    allow_merge_commit=True,
-    allow_rebase_merge=False,
-    delete_branch_on_merge=True,
+    homepage: Optional[str] = None,
+    description: Optional[str] = None,
+    allow_squash_merge: bool = False,
+    allow_merge_commit: bool = True,
+    allow_rebase_merge: bool = False,
+    delete_branch_on_merge: bool = True,
     *,
-    org_name,
-    repo_name,
-    app,
-    logger,
-):
+    org_name: str,
+    repo_name: str,
+    app: Application,
+    logger: BoundLogger,
+) -> Dict[str, Any]:
     """Create a new repository on GitHub.
 
     This function wraps the `/orgs{/org_name}/repos
@@ -74,7 +79,9 @@ async def create_repo(
     return response
 
 
-async def get_authenticated_user(*, app, logger):
+async def get_authenticated_user(
+    *, app: Application, logger: BoundLogger
+) -> Dict[str, Any]:
     """Get information about the authenticated GitHub user.
 
     This function wraps the `GET /user
@@ -99,7 +106,7 @@ async def get_authenticated_user(*, app, logger):
     return response
 
 
-def add_auth_to_remote(*, remote, app):
+def add_auth_to_remote(*, remote: Remote, app: Application) -> Remote:
     """Add username and password authentication to the URL of a GitPython
     remote.
 
@@ -132,18 +139,18 @@ def add_auth_to_remote(*, remote, app):
 
 
 async def create_pr(
-    maintainer_can_modify=True,
-    draft=False,
+    maintainer_can_modify: bool = True,
+    draft: bool = False,
     *,
-    owner,
-    repo,
-    head,
-    base,
-    title,
-    body,
-    app,
-    logger,
-):
+    owner: str,
+    repo: str,
+    head: str,
+    base: str,
+    title: str,
+    body: str,
+    app: Application,
+    logger: BoundLogger,
+) -> Dict[str, Any]:
     """Create a GitHub pull request.
 
     This function wraps `POST /repos/:owner/:repo/pulls

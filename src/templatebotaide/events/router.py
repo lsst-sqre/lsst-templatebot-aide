@@ -1,7 +1,10 @@
 import asyncio
+from typing import Any, Dict
 
 import structlog
+from aiohttp.web import Application
 from aiokafka import AIOKafkaConsumer
+from aiokafka.structs import TopicPartition
 from kafkit.registry import Deserializer
 from kafkit.registry.aiohttp import RegistryApi
 
@@ -33,7 +36,7 @@ integrate with LSST the Docs.
 """
 
 
-async def consume_events(app):
+async def consume_events(app: Application) -> None:
     """Consume events from templatebot-related topics in Kafka."""
     logger = structlog.get_logger(app["api.lsst.codes/loggerName"])
 
@@ -127,8 +130,15 @@ async def consume_events(app):
 
 
 async def route_event(
-    *, event, app, schema_id, schema, topic, partition, offset
-):
+    *,
+    event: Dict[str, Any],
+    app: Application,
+    schema_id: str,
+    schema: Dict[str, Any],
+    topic: str,
+    partition: TopicPartition,
+    offset: int,
+) -> None:
     """Route events from `consume_events` to specific handlers."""
     logger = structlog.get_logger(app["api.lsst.codes/loggerName"])
     logger = logger.bind(

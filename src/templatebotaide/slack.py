@@ -1,13 +1,23 @@
 """Workflows for using the Slack API that are common to many handlers."""
 
+from typing import Any, Dict, Optional
+
 import yarl
+from aiohttp.web import Application
+from structlog.stdlib import BoundLogger
 
 __all__ = ["post_message"]
 
 
 async def post_message(
-    body=None, text=None, channel=None, thread_ts=None, *, logger, app
-):
+    body: Optional[Dict[str, Any]] = None,
+    text: Optional[str] = None,
+    channel: Optional[str] = None,
+    thread_ts: Optional[str] = None,
+    *,
+    logger: BoundLogger,
+    app: Application,
+) -> None:
     """Send a ``chat.postMessage`` request to Slack.
 
     Parameters
@@ -63,7 +73,9 @@ async def post_message(
         )
 
 
-async def get_user_info(*, user, logger, app):
+async def get_user_info(
+    *, user: str, logger: BoundLogger, app: Application
+) -> Dict[str, Any]:
     """Get information about a Slack user through the ``users.info`` web API.
 
     Parameters

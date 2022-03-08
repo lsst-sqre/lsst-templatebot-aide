@@ -1,13 +1,25 @@
-"""Post-render handler for DocuShare-managed LaTeX documents."""
+"""Post-render handler for technotes."""
+
+from typing import Any, Dict
+
+from aiohttp.web import Application
+from structlog.stdlib import BoundLogger
 
 from templatebotaide.events.handlers.utilities import pr_latex_submodules
 from templatebotaide.slack import post_message
 
-__all__ = ["handle_document_postrender"]
+__all__ = ["handle_technote_postrender"]
 
 
-async def handle_document_postrender(*, event, schema, app, logger):
-    """Handle a ``templatebot-postrender`` event for a document.
+async def handle_technote_postrender(
+    *,
+    event: Dict[str, Any],
+    schema: Dict[str, Any],
+    app: Application,
+    logger: BoundLogger,
+) -> None:
+    """Handle a ``templatebot-postrender`` event for a technote-type of
+    template.
 
     Parameters
     ----------
@@ -21,9 +33,9 @@ async def handle_document_postrender(*, event, schema, app, logger):
         A `structlog` logger instance with bound context related to the
         Kafka event.
     """
-    logger.debug("In handle_document_postrender", event_data=event)
+    logger.debug("In handle_technote_postrender", event_data=event)
 
-    if event["template_name"] in ("test_report", "latex_lsstdoc"):
+    if event["template_name"] in ("technote_latex", "technote_aastex"):
         # Handle the configuration PR for a LaTeX technote to add the
         # lsst-texmf submodule.
         try:
@@ -45,7 +57,7 @@ async def handle_document_postrender(*, event, schema, app, logger):
                 )
         except Exception:
             logger.exception(
-                "Failed to PR latex submodules for document",
+                "Failed to PR latex submodules for technote",
                 github_repo=event["github_repo"],
             )
             if event["slack_username"] is not None:

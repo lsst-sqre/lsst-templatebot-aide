@@ -2,6 +2,12 @@
 Change log
 ##########
 
+0.4.1 (unreleased)
+==================
+
+- Drop support for Python 3.9.
+- Update dependencies.
+
 0.4.0 (2021-12-01)
 ==================
 

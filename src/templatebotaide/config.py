@@ -2,11 +2,12 @@
 
 import os
 from pathlib import Path
+from typing import Any, Dict
 
 __all__ = ["create_config"]
 
 
-def create_config():
+def create_config() -> Dict[str, Any]:
     """Create a config mapping from defaults and environment variable
     overrides.
 
@@ -22,7 +23,7 @@ def create_config():
         app = web.Application()
         app.update(create_config)
     """
-    c = {}
+    c: Dict[str, Any] = {}
 
     # Application run profile. 'development' or 'production'
     c["api.lsst.codes/profile"] = os.getenv(

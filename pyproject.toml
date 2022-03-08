@@ -11,7 +11,7 @@ build-backend = 'setuptools.build_meta'
 [tool.coverage.run]
 parallel = true
 branch = true
-source = ["templatebotaide"]
+source = ["src/templatebotaide"]
 
 [tool.coverage.paths]
 source = ["src", ".tox/*/site-packages"]
@@ -53,3 +53,6 @@ include_trailing_comma = true
 multi_line_output = 3
 known_first_party = ["templatebotaide", "tests"]
 skip = ["docs/conf.py"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "strict"
