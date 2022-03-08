@@ -58,9 +58,8 @@ async def pr_latex_submodules(
             user=app["templatebot-aide/githubUsername"]
         )
         new_branch = repo.create_head(new_branch_name)
-        repo.head.reference = new_branch
         # reset the index and working tree to match the pointed-to commit
-        repo.head.reset(index=True, working_tree=True)
+        repo.head.reset(new_branch, index=True, working_tree=True)
 
         # Add the lsst-texmf submodule
         git.objects.submodule.base.Submodule.add(
