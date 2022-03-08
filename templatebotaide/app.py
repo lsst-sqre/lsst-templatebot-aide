@@ -7,6 +7,7 @@ import logging
 import ssl
 import sys
 from pathlib import Path
+from typing import Any, AsyncIterator, List
 
 import cachetools
 import structlog
@@ -22,7 +23,7 @@ from .middleware import setup_middleware
 from .routes import init_root_routes, init_routes
 
 
-def create_app():
+def create_app() -> web.Application:
     """Create the aiohttp.web application."""
     config = create_config()
     configure_logging(
@@ -57,8 +58,10 @@ def create_app():
 
 
 def configure_logging(
-    profile="development", log_level="info", logger_name="templatebotaide"
-):
+    profile: str = "development",
+    log_level: str = "info",
+    logger_name: str = "templatebotaide",
+) -> None:
     """Configure logging and structlog."""
     stream_handler = logging.StreamHandler(stream=sys.stdout)
     stream_handler.setFormatter(logging.Formatter("%(message)s"))
@@ -68,7 +71,7 @@ def configure_logging(
 
     if profile == "production":
         # JSON-formatted logging
-        processors = [
+        processors: List[Any] = [
             structlog.stdlib.filter_by_level,
             structlog.stdlib.add_logger_name,
             structlog.stdlib.add_log_level,
@@ -99,7 +102,7 @@ def configure_logging(
     )
 
 
-async def init_http_session(app):
+async def init_http_session(app: web.Application) -> AsyncIterator[None]:
     """Create an aiohttp.ClientSession and make it available as a
     ``'api.lsst.codes/httpSession'`` key on the application.
 
@@ -131,7 +134,7 @@ async def init_http_session(app):
     await app["api.lsst.codes/httpSession"].close()
 
 
-async def init_gidgethub_session(app):
+async def init_gidgethub_session(app: web.Application) -> AsyncIterator[None]:
     """Create a Gidgethub client session to access the GitHub api.
 
     Notes
@@ -143,7 +146,7 @@ async def init_gidgethub_session(app):
     session = app["api.lsst.codes/httpSession"]
     token = app["templatebot-aide/githubToken"]
     username = app["templatebot-aide/githubUsername"]
-    cache = cachetools.LRUCache(maxsize=500)
+    cache: cachetools.LRUCache[Any, Any] = cachetools.LRUCache(maxsize=500)
     gh = GitHubAPI(session, username, oauth_token=token, cache=cache)
     app["templatebot-aide/gidgethub"] = gh
 
@@ -152,7 +155,7 @@ async def init_gidgethub_session(app):
     # No cleanup to do
 
 
-async def configure_kafka_ssl(app):
+async def configure_kafka_ssl(app: web.Application) -> AsyncIterator[None]:
     """Configure an SSL context for the Kafka client (if appropriate).
 
     Notes
@@ -212,7 +215,7 @@ async def configure_kafka_ssl(app):
     yield
 
 
-async def start_events_listener(app):
+async def start_events_listener(app: web.Application) -> None:
     """Start the Kafka consumer for templatebot events as a background task
     (``on_startup`` signal handler).
     """
@@ -221,7 +224,7 @@ async def start_events_listener(app):
     )
 
 
-async def stop_events_listener(app):
+async def stop_events_listener(app: web.Application) -> None:
     """Stop the Kafka consumer for templatebot events (``on_cleanup`` signal
     handler).
     """
@@ -229,7 +232,7 @@ async def stop_events_listener(app):
     await app["templatebot-aide/events_consumer_task"]
 
 
-async def init_producer(app):
+async def init_producer(app: web.Application) -> AsyncIterator[None]:
     """Initialize and cleanup the aiokafka Producer instance
 
     Notes
@@ -264,7 +267,7 @@ async def init_producer(app):
     await producer.stop()
 
 
-async def init_avro_serializer(app):
+async def init_avro_serializer(app: web.Application) -> AsyncIterator[None]:
     """Initialize the Avro serializer for ``templatebot.render-ready``
     messages.
 

@@ -1,8 +1,11 @@
 import datetime
 import re
 from copy import deepcopy
+from typing import Any, Dict
 
 import gidgethub
+from aiohttp.web import Application
+from structlog.stdlib import BoundLogger
 
 from templatebotaide.github import create_repo
 from templatebotaide.slack import post_message
@@ -10,7 +13,13 @@ from templatebotaide.slack import post_message
 __all__ = ["handle_generic_prerender"]
 
 
-async def handle_generic_prerender(*, event, schema, app, logger):
+async def handle_generic_prerender(
+    *,
+    event: Dict[str, Any],
+    schema: Dict[str, Any],
+    app: Application,
+    logger: BoundLogger,
+) -> None:
     """Handle a ``templatebot-prerender`` event for a template where the
     GitHub organization and repository can be determined directly from the
     template variables.

@@ -2,10 +2,14 @@
 
 __all__ = ["get_ltd_token", "register_ltd_product"]
 
+from typing import Any, Dict
+
 import aiohttp
+from aiohttp.web import Application
+from structlog.stdlib import BoundLogger
 
 
-async def get_ltd_token(*, app, logger):
+async def get_ltd_token(*, app: Application, logger: BoundLogger) -> str:
     """Get an auth token for LSST the Docs.
 
     Parameters
@@ -42,8 +46,14 @@ async def get_ltd_token(*, app, logger):
 
 
 async def register_ltd_product(
-    *, slug, title, github_repo, app, logger, main_mode="git_refs"
-):
+    *,
+    slug: str,
+    title: str,
+    github_repo: str,
+    app: Application,
+    logger: BoundLogger,
+    main_mode: str = "git_refs",
+) -> Dict[str, Any]:
     """Register a new product on LSST the Docs.
 
     Parameters

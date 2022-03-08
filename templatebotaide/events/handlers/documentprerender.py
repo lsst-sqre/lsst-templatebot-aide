@@ -1,8 +1,11 @@
 import datetime
 import re
 from copy import deepcopy
+from typing import Any, Dict
 
 import gidgethub
+from aiohttp.web import Application
+from structlog.stdlib import BoundLogger
 
 from templatebotaide.events.handlers.utilities import clean_string_whitespace
 from templatebotaide.github import create_repo
@@ -29,7 +32,13 @@ We use this set to help alert users that they may be using the wrong template.
 """
 
 
-async def handle_document_prerender(*, event, schema, app, logger):
+async def handle_document_prerender(
+    *,
+    event: Dict[str, Any],
+    schema: Dict[str, Any],
+    app: Application,
+    logger: BoundLogger,
+) -> None:
     """Handle a ``templatebot-prerender`` event for a document template where
     the repository is known and needs to be registered with LSST the Docs.
 

@@ -6,6 +6,6 @@ __all__ = ["get_index"]
 
 
 @root_routes.get("/")
-async def get_index(request):
+async def get_index(request: web.Request) -> web.Response:
     name = request.config_dict["api.lsst.codes/name"]
     return web.Response(text=name)

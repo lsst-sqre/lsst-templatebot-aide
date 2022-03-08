@@ -1,8 +1,11 @@
 import datetime
 import re
 from copy import deepcopy
+from typing import Any, Dict, List
 
 import gidgethub
+from aiohttp.web import Application
+from structlog.stdlib import BoundLogger
 
 from templatebotaide.events.handlers.utilities import clean_string_whitespace
 from templatebotaide.github import create_repo
@@ -12,7 +15,13 @@ from templatebotaide.slack import get_user_info, post_message
 __all__ = ["handle_technote_prerender"]
 
 
-async def handle_technote_prerender(*, event, schema, app, logger):
+async def handle_technote_prerender(
+    *,
+    event: Dict[str, Any],
+    schema: Dict[str, Any],
+    app: Application,
+    logger: BoundLogger,
+) -> None:
     """Handle a ``templatebot-prerender`` event for a technote template where
     the repository is assigned based on a sequence numbering schema.
 
@@ -172,7 +181,7 @@ async def handle_technote_prerender(*, event, schema, app, logger):
     logger.info("Sent render_ready message", data=render_ready_message)
 
 
-def propose_number(series_numbers):
+def propose_number(series_numbers: List[int]) -> int:
     """Propose a technote number given the list of available document numbers.
 
     This algorithm starts from 1, increments numbers by 1, and will fill in

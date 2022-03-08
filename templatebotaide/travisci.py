@@ -11,16 +11,21 @@ __all__ = [
 
 import asyncio
 import base64
+from typing import Any, Dict, Optional
 
 import Cryptodome.Cipher.PKCS1_v1_5
 import Cryptodome.PublicKey.RSA
 import uritemplate
+from aiohttp.web import Application
+from structlog.stdlib import BoundLogger
 
 
-def _get_travis_endpoint_type(org=None, slug=None):
-    if org is None and slug is None:
-        raise ValueError("Either `slug` or `org` must be specified.")
-    elif slug is None:
+def _get_travis_endpoint_type(
+    org: Optional[str] = None, slug: Optional[str] = None
+) -> str:
+    if org is None:
+        if slug is None:
+            raise ValueError("Either `slug` or `org` must be specified.")
         org = slug.split("/")[0]
 
     if org in ("lsst", "lsst-sims"):
@@ -29,7 +34,9 @@ def _get_travis_endpoint_type(org=None, slug=None):
         return "com"
 
 
-def _get_travis_url(slug=None, org=None):
+def _get_travis_url(
+    slug: Optional[str] = None, org: Optional[str] = None
+) -> str:
     """Get the right API host (.org or .com) for different LSST GitHub
     organizations.
 
@@ -45,14 +52,16 @@ def _get_travis_url(slug=None, org=None):
         return "https://api.travis-ci.org"
 
 
-def _get_travis_token(*, app, org=None, slug=None):
+def _get_travis_token(
+    *, app: Application, org: Optional[str] = None, slug: Optional[str] = None
+) -> str:
     if _get_travis_endpoint_type(org=org, slug=slug) == "com":
         return app["templatebot-aide/travisTokenCom"]
     else:
         return app["templatebot-aide/travisToken"]
 
 
-def make_travis_headers(*, token):
+def make_travis_headers(*, token: str) -> Dict[str, str]:
     return {
         "Travis-API-Version": "3",
         "User-Agent": "lsst-templatebot-aide",
@@ -60,7 +69,9 @@ def make_travis_headers(*, token):
     }
 
 
-async def activate_travis(*, slug, app, logger):
+async def activate_travis(
+    *, slug: str, app: Application, logger: BoundLogger
+) -> None:
     """Activate Travis CI for a repository.
 
     Parameters
@@ -96,7 +107,9 @@ async def activate_travis(*, slug, app, logger):
         )
 
 
-async def get_current_user(*, slug, app, logger):
+async def get_current_user(
+    *, slug: str, app: Application, logger: BoundLogger
+) -> Dict[str, Any]:
     """Get information about the logged-in Travis user.
 
     Parameters
@@ -127,7 +140,9 @@ async def get_current_user(*, slug, app, logger):
         return data
 
 
-async def sync_travis_account(*, slug, app, logger):
+async def sync_travis_account(
+    *, slug: str, app: Application, logger: BoundLogger
+) -> None:
     """Trigger a Travis sync and wait for its completion.
 
     Parameters
@@ -174,7 +189,9 @@ async def sync_travis_account(*, slug, app, logger):
     await asyncio.sleep(10.0)
 
 
-async def get_generated_travis_repo_key(*, slug, app, logger):
+async def get_generated_travis_repo_key(
+    *, slug: str, app: Application, logger: BoundLogger
+) -> Dict[str, Any]:
     """Get the generated public key of a Travis repo.
 
     Parameters
@@ -214,7 +231,7 @@ async def get_generated_travis_repo_key(*, slug, app, logger):
     return data
 
 
-def encrypt_travis_secret(*, public_key, secret):
+def encrypt_travis_secret(*, public_key: bytes, secret: str) -> bytes:
     """Encrypt a string using a repository's public Travis CI key.
 
     Parameters
@@ -243,7 +260,7 @@ def encrypt_travis_secret(*, public_key, secret):
     return base64.b64encode(rsa_cipher.encrypt(secret.encode("utf-8")))
 
 
-def make_travis_repo_url(slug):
+def make_travis_repo_url(slug: str) -> str:
     """Make the user accessible URL for a repository on Travis.
 
     This function adapts to whether the slug is associated with a ``.com`` or

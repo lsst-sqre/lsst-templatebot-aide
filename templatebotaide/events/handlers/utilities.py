@@ -4,15 +4,20 @@ import asyncio
 import re
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from typing import Any, Dict
 
 import git
+from aiohttp.web import Application
+from structlog.stdlib import BoundLogger
 
 from templatebotaide import github
 
 __all__ = ["pr_latex_submodules", "clean_string_whitespace"]
 
 
-async def pr_latex_submodules(*, event, app, logger):
+async def pr_latex_submodules(
+    *, event: Dict[str, Any], app: Application, logger: BoundLogger
+) -> Dict[str, Any]:
     """Create a GitHub Pull Request that adds the lsst-texmf submodule.
 
     Parameters

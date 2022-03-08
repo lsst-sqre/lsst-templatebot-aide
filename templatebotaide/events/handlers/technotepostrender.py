@@ -1,12 +1,23 @@
 """Post-render handler for technotes."""
 
+from typing import Any, Dict
+
+from aiohttp.web import Application
+from structlog.stdlib import BoundLogger
+
 from templatebotaide.events.handlers.utilities import pr_latex_submodules
 from templatebotaide.slack import post_message
 
 __all__ = ["handle_technote_postrender"]
 
 
-async def handle_technote_postrender(*, event, schema, app, logger):
+async def handle_technote_postrender(
+    *,
+    event: Dict[str, Any],
+    schema: Dict[str, Any],
+    app: Application,
+    logger: BoundLogger,
+) -> None:
     """Handle a ``templatebot-postrender`` event for a technote-type of
     template.
 

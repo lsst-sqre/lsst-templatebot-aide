@@ -19,7 +19,7 @@ routes = web.RouteTableDef()
 """
 
 
-def init_routes():
+def init_routes() -> web.RouteTableDef:
     """Initialize the route table and handlers from the application APIs,
     served at ``/<api_name>/``.
     """
@@ -30,7 +30,7 @@ def init_routes():
     return routes
 
 
-def init_root_routes():
+def init_root_routes() -> web.RouteTableDef:
     """Initialize the route table and handlers for the root APIs (not the
     ones publicly available).
     """
