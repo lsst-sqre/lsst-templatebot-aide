@@ -479,9 +479,9 @@ pygments==2.11.2 \
     #   aiohttp-devtools
     #   sphinx
     #   sphinx-prompt
-pyparsing==3.0.7 \
-    --hash=sha256:18ee9022775d270c55187733956460083db60b37d0d0fb357445f3094eed3eea \
-    --hash=sha256:a6c06a88f252e6c322f65faf8f418b16213b51bdfaece0524c1c1bc30c63c484
+pyparsing==3.0.8 \
+    --hash=sha256:7bf433498c016c4314268d95df76c81b842a4cb2b276fa3312cfb1e1d85f6954 \
+    --hash=sha256:ef7b523f6356f763771559412c0d7134753f037822dad1b16945b7b846f7ad06
     # via
     #   packaging
     #   sphinxcontrib-doxylink
@@ -606,9 +606,9 @@ sphinx-automodapi==0.14.1 \
     --hash=sha256:4238e131d7abc47226449661bb3cfa2bb1b5b190184ffa69d9b924b984a22753 \
     --hash=sha256:a2f9c0f9e2901875e6db75df6c01412875eb15f25e7db1206e1b69fedf75bbc9
     # via documenteer
-sphinx-click==3.1.0 \
-    --hash=sha256:36dbf271b1d2600fb05bd598ddeed0b6b6acf35beaf8bc9d507ba7716b232b0e \
-    --hash=sha256:8fb0b048a577d346d741782e44d041d7e908922858273d99746f305870116121
+sphinx-click==4.0.0 \
+    --hash=sha256:3650d80994d157b1dc18e62fefd4e93511178f9ce9d8afd80627b1b3e0210cab \
+    --hash=sha256:78b78d274e32ac663693c0af4e47d3254f4a5c41fef53ace6b443d9d0a3b0631
     # via documenteer
 sphinx-jinja==2.0.1 \
     --hash=sha256:1defa443db25acd662b5c2ccd288d7c7455af29c6cf63573f089f78b688f7254 \
@@ -625,9 +625,9 @@ sphinxcontrib-autoprogram==0.1.7 \
     --hash=sha256:746adb4214c3d2917af948499b3ed4b7b88b208a48c96368c0cff356474dba42 \
     --hash=sha256:bc642e3f2817a7539f306e021697f72b225bea5ad23b30dc14a7b9d1408d1f1a
     # via documenteer
-sphinxcontrib-bibtex==2.4.1 \
-    --hash=sha256:282223309bbaf34cd20a8fe1ba346fe8642f403a8930607e77a8cb08ae81fc5f \
-    --hash=sha256:b7da94e960a855c07c6816c7b0f4e8619b5b3ada00a5cb99b1eaa847a788f779
+sphinxcontrib-bibtex==2.4.2 \
+    --hash=sha256:608512afde6b732148cdc9123550bd560bf48e071d1fb7bb1bab4f4437ff04f4 \
+    --hash=sha256:65b023ee47f35f1f03ac4d71c824e67c624c7ecac1bb26e83623271a01f9da86
     # via documenteer
 sphinxcontrib-devhelp==1.0.2 \
     --hash=sha256:8165223f9a335cc1af7ffe1ed31d2871f325254c0423bc0c4c7cd1c1e4734a2e \
