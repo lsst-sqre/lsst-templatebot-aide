@@ -565,7 +565,6 @@ requests==2.27.1 \
     # via
     #   documenteer
     #   sphinx
-    #   sphinxcontrib-doxylink
 six==1.16.0 \
     --hash=sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926 \
     --hash=sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254
@@ -633,9 +632,9 @@ sphinxcontrib-devhelp==1.0.2 \
     --hash=sha256:8165223f9a335cc1af7ffe1ed31d2871f325254c0423bc0c4c7cd1c1e4734a2e \
     --hash=sha256:ff7f1afa7b9642e7060379360a67e9c41e8f3121f2ce9164266f61b9f4b338e4
     # via sphinx
-sphinxcontrib-doxylink==1.11.2 \
-    --hash=sha256:091bf551b18ea1e41a77293b961c067f9e6316b8aa3bc0ccd4eab4a7c20f5fe6 \
-    --hash=sha256:8cc80292f7a49034f673d5311df119183128c8f773ed2687ed0644483eeb27c9
+sphinxcontrib-doxylink==1.12.0 \
+    --hash=sha256:03e871f5833c92f5c1b6f201ca5ab1d9299c12ec749333d3a1c667038baeb050 \
+    --hash=sha256:654394567c0a2cc5e6d33dbac98ee10b2a90b22d2a9e19f974b38a287c0f84dd
     # via documenteer
 sphinxcontrib-htmlhelp==2.0.0 \
     --hash=sha256:d412243dfb797ae3ec2b59eca0e52dac12e75a241bf0e4eb861e450d06c6ed07 \
