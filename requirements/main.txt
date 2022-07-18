@@ -360,9 +360,9 @@ kafka-python==2.0.2 \
     --hash=sha256:04dfe7fea2b63726cd6f3e79a2d86e709d608d74406638c5da33a01d45a9d7e3 \
     --hash=sha256:2d92418c7cb1c298fa6c7f0fb3519b520d0d7526ac6cb7ae2a4fc65a51a94b6e
     # via aiokafka
-kafkit==0.1.1 \
-    --hash=sha256:1f172487dba1b05c24d980ae7a9b5769c61454bfe1f1a212ba35692c5c0f0b65 \
-    --hash=sha256:7fea01dcc752117e2f4de7ec96eac6f6c1909c43a23ba470cc27f3d6fbe2a8fb
+kafkit==0.2.1 \
+    --hash=sha256:4cb9917ce25699a910be2b02812d9d024d9eaef6ac1c42181246119733a5069a \
+    --hash=sha256:e372f66e710a344dfc0c370a05974e354dba56ea298c495517e68768b61cfaf5
     # via -r requirements/main.in
 multidict==6.0.2 \
     --hash=sha256:0327292e745a880459ef71be14e709aaea2f783f3537588fb4ed09b6c01bca60 \
