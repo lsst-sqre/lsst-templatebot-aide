@@ -367,9 +367,9 @@ gitdb==4.0.9 \
     --hash=sha256:8033ad4e853066ba6ca92050b9df2f89301b8fc8bf7e9324d412a63f8bf1a8fd \
     --hash=sha256:bac2fd45c0a1c9cf619e63a90d62bdc63892ef92387424b855792a6cabe789aa
     # via gitpython
-gitpython==3.1.28 \
-    --hash=sha256:6bd3451b8271132f099ceeaf581392eaf6c274af74bb06144307870479d0697c \
-    --hash=sha256:77bfbd299d8709f6af7e0c70840ef26e7aff7cf0c1ed53b42dd7fc3a310fcb02
+gitpython==3.1.29 \
+    --hash=sha256:41eea0deec2deea139b459ac03656f0dd28fc4a3387240ec1d3c259a2c47850f \
+    --hash=sha256:cc36bfc4a3f913e66805a28e84703e419d9c264c1077e537b54f0e1af85dbefd
     # via -r requirements/main.in
 idna==3.4 \
     --hash=sha256:814f528e8dead7d329833b91c5faa87d60bf71824cd12a7530b5526063d02cb4 \
@@ -581,9 +581,9 @@ structlog==22.1.0 \
     --hash=sha256:760d37b8839bd4fe1747bed7b80f7f4de160078405f4b6a1db9270ccbfce6c30 \
     --hash=sha256:94b29b1d62b2659db154f67a9379ec1770183933d6115d21f21aa25cfc9a7393
     # via -r requirements/main.in
-types-cryptography==3.3.23 \
-    --hash=sha256:913b3e66a502edbf4bfc3bb45e33ab476040c56942164a7ff37bd1f0ef8ef783 \
-    --hash=sha256:b85c45fd4d3d92e8b18e9a5ee2da84517e8fff658e3ef5755c885b1c2a27c1fe
+types-cryptography==3.3.23.1 \
+    --hash=sha256:b9f8aa93d9e4d7ff920961cdce3dc7cca479946890924d68356b66f15f4f35e3 \
+    --hash=sha256:f108e7a7161eedd9fe391e1a8ae5a98d40c1da2f0418bc0812a9119990272314
     # via pyjwt
 uritemplate==4.1.1 \
     --hash=sha256:4346edfc5c3b79f694bccd6d6099a322bbeb628dbf2cd86eea55a456ce5124f0 \
