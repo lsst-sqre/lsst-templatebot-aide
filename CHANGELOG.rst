@@ -2,9 +2,10 @@
 Change log
 ##########
 
-0.4.1 (unreleased)
+0.5.0 (2022-10-24)
 ==================
 
+- Add technote template pre-rendering support for `ADASS <https://github.com/lsst/templates/tree/main/project_templates/technote_adasstex>`__ and `SPIE <https://github.com/lsst/templates/tree/main/project_templates/technote_spietex>`__ technote templates.
 - Drop support for Python 3.9.
 - Update dependencies.
 
