@@ -7,7 +7,7 @@ from typing import Awaitable, Callable, List
 
 import structlog
 from aiohttp import web
-from aiohttp.web.web_response import Request, StreamResponse
+from aiohttp.web import Request, StreamResponse
 
 from templatebotaide.logging import response_logger
 
