@@ -19,7 +19,13 @@ from .handlers import (
 __all__ = ["consume_events"]
 
 
-TECHNOTE_TEMPLATES = ("technote_rst", "technote_latex", "technote_aastex")
+TECHNOTE_TEMPLATES = (
+    "technote_rst",
+    "technote_latex",
+    "technote_aastex",
+    "technote_adasstex",
+    "technote_spietex",
+)
 """Names of templates in https://github.com/lsst/templates that correspond to
 technical notes.
 

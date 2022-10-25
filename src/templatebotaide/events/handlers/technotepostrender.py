@@ -35,7 +35,13 @@ async def handle_technote_postrender(
     """
     logger.debug("In handle_technote_postrender", event_data=event)
 
-    if event["template_name"] in ("technote_latex", "technote_aastex"):
+    latex_templates = (
+        "technote_latex",
+        "technote_aastex",
+        "technote_adasstex",
+        "technote_spietex",
+    )
+    if event["template_name"] in latex_templates:
         # Handle the configuration PR for a LaTeX technote to add the
         # lsst-texmf submodule.
         try:
