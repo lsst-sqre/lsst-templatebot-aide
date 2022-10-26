@@ -2,6 +2,11 @@
 Change log
 ##########
 
+0.5.1 (2022-10-26)
+==================
+
+- Fix the submodule PR post-rendering service.
+
 0.5.0 (2022-10-24)
 ==================
 
