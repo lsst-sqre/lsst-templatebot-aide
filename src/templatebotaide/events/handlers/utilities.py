@@ -2,7 +2,6 @@
 
 import asyncio
 import re
-from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Any, Dict
 
@@ -54,30 +53,27 @@ async def pr_latex_submodules(
         origin = github.add_auth_to_remote(remote=origin, app=app)
 
         # Create the branch
-        new_branch_name = "u/{user}/config".format(
-            user=app["templatebot-aide/githubUsername"]
-        )
+        new_branch_name = f"u/{app['templatebot-aide/githubUsername']}/config"
         new_branch = repo.create_head(new_branch_name)
-        # reset the index and working tree to match the pointed-to commit
-        repo.head.reset(new_branch, index=True, working_tree=True)
+        new_branch.checkout()
 
         # Add the lsst-texmf submodule
-        git.objects.submodule.base.Submodule.add(
-            repo,
+        repo.create_submodule(
             "lsst-texmf",
             path="lsst-texmf",
             url="https://github.com/lsst/lsst-texmf.git",
             branch="main",
+            depth=1,
         )
-        repo.index.add([str(Path(tmpdir_name) / ".gitmodules")])
         repo.index.commit(
             "Add lsst-texmf submodule", author=author, committer=author
         )
-
         origin.push(refspec=f"{new_branch_name}:{new_branch_name}")
 
-        await asyncio.sleep(1.0)
+        # Ensure GitHub can register the new branch before submitting a PR
+        await asyncio.sleep(10.0)
 
+        # Create PR
         if ltd_url.endswith("/"):
             ltd_url.rstrip("/")
         branch_url = ltd_url + "/v/" + new_branch_name.replace("/", "-")
@@ -91,7 +87,6 @@ async def pr_latex_submodules(
             "free to update this PR or the underlying branch if there's an "
             "issue."
         )
-
         pr_response = await github.create_pr(
             owner=repo_owner,
             repo=repo_name,
