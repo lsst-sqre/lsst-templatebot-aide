@@ -114,9 +114,9 @@ anyio==3.6.2 \
     --hash=sha256:25ea0d673ae30af41a0c442f81cf3b38c7e79fdc7b60335a4c14e05eb0947421 \
     --hash=sha256:fbbe32bd270d2a2ef3ed1c5d45041250284e31fc0a4df4a5a6071842051a51e3
     # via watchgod
-asttokens==2.0.8 \
-    --hash=sha256:c61e16246ecfb2cde2958406b4c8ebc043c9e6d73aaa83c941673b35e5d3a76b \
-    --hash=sha256:e3305297c744ae53ffa032c45dc347286165e4ffce6875dc662b205db0623d86
+asttokens==2.1.0 \
+    --hash=sha256:1b28ed85e254b724439afc783d4bee767f780b936c3fe8b3275332f42cf5f561 \
+    --hash=sha256:4aa76401a151c8cc572d906aad7aea2a841780834a19d780f4321c0fe1b54635
     # via devtools
 async-timeout==4.0.2 \
     --hash=sha256:2163e1640ddb52b7a8c80d0a67a08587e5d245cc9c553a74a847056bc2976b15 \
@@ -223,6 +223,10 @@ docutils==0.19 \
     #   sphinx-click
     #   sphinx-jinja
     #   sphinxcontrib-bibtex
+exceptiongroup==1.0.0 \
+    --hash=sha256:2ac84b496be68464a2da60da518af3785fff8b7ec0d090a581604bc870bdee41 \
+    --hash=sha256:affbabf13fb6e98988c38d9c5650e701569fe3c1de3233cfb61c5f33774690ad
+    # via pytest
 executing==0.10.0 \
     --hash=sha256:9c745f80cda11eb22b62cbecf21156491a794eb56ab06f9d286a44e62822b24e \
     --hash=sha256:d1cd87c2e371e9966261410c5b3769d6df2f9e4a79a83eebd2662dd3388f9833
@@ -483,10 +487,6 @@ pluggy==1.0.0 \
     --hash=sha256:4224373bacce55f955a878bf9cfa763c1e360858e330072059e10bad68531159 \
     --hash=sha256:74134bbf457f031a36d68416e1509f34bd5ccc019f0bcc952c7b909d06b37bd3
     # via pytest
-py==1.11.0 \
-    --hash=sha256:51c75c4126074b472f746a24399ad32f6053d1b34b68d2fa41e558e6f4a98719 \
-    --hash=sha256:607c53218732647dff4acdfcd50cb62615cedf612e72d1724fb1a0cc6405b378
-    # via pytest
 pybtex==0.24.0 \
     --hash=sha256:818eae35b61733e5c007c3fcd2cfb75ed1bc8b4173c1f70b56cc4c0802d34755 \
     --hash=sha256:e1e0c8c69998452fea90e9179aa2a98ab103f3eed894405b7264e517cc2fcc0f
@@ -548,9 +548,9 @@ pyparsing==3.0.9 \
     # via
     #   packaging
     #   sphinxcontrib-doxylink
-pytest==7.1.3 \
-    --hash=sha256:1377bda3466d70b55e3f5cecfa55bb7cfcf219c7964629b967c37cf0bda818b7 \
-    --hash=sha256:4f365fec2dff9c1162f834d9f18af1ba13062db0c708bf7b946f8a5c76180c39
+pytest==7.2.0 \
+    --hash=sha256:892f933d339f068883b6fd5a459f03d85bfcb355e4981e146d2c7616c21fef71 \
+    --hash=sha256:c4014eb40e10f11f355ad4e3c2fb2c6c6d1919c73f3b5a433de4708202cade59
     # via
     #   -r requirements/dev.in
     #   pytest-aiohttp
