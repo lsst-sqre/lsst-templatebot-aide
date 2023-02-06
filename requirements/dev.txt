@@ -516,9 +516,9 @@ mypy==0.991 \
     --hash=sha256:de32edc9b0a7e67c2775e574cb061a537660e51210fbf6006b0b36ea695ae9bb \
     --hash=sha256:e62ebaad93be3ad1a828a11e90f0e76f15449371ffeecca4a0a0b9adc99abcef
     # via -r requirements/dev.in
-mypy-extensions==0.4.3 \
-    --hash=sha256:090fedd75945a69ae91ce1303b5824f428daf5a028d2f6ab8a299250a846f15d \
-    --hash=sha256:2d82818f5bb3e369420cb3c4060a7970edba416647068eb4c5343488a6c604a8
+mypy-extensions==1.0.0 \
+    --hash=sha256:4392f6c0eb8a5668a69e23d168ffa70f0be9ccfd32b5cc2d26a34ae5b844552d \
+    --hash=sha256:75dbf8955dc00442a438fc4d0666508a9a97b6bd41aa2f0ffe9d2f2725af0782
     # via mypy
 numpydoc==1.5.0 \
     --hash=sha256:b0db7b75a32367a0e25c23b397842c65e344a1206524d16c8069f0a1c91b5f4c \
@@ -751,9 +751,9 @@ sphinxcontrib-doxylink==1.12.2 \
     --hash=sha256:2d66b357b92a08a6b0bbd871cb332a6d8fc334cdd70665b3e10c044ee43b4179 \
     --hash=sha256:8ea5a19b949a31f75e20e9e2fc13c6cbca3644817d1df2d054b497a403bbb759
     # via documenteer
-sphinxcontrib-htmlhelp==2.0.0 \
-    --hash=sha256:d412243dfb797ae3ec2b59eca0e52dac12e75a241bf0e4eb861e450d06c6ed07 \
-    --hash=sha256:f5f8bb2d0d629f398bf47d0d69c07bc13b65f75a81ad9e2f71a63d4b7a2f6db2
+sphinxcontrib-htmlhelp==2.0.1 \
+    --hash=sha256:0cbdd302815330058422b98a113195c9249825d681e18f11e8b1f78a2f11efff \
+    --hash=sha256:c38cb46dccf316c79de6e5515e1770414b797162b23cd3d06e67020e1d2a6903
     # via sphinx
 sphinxcontrib-jsmath==1.0.1 \
     --hash=sha256:2ec2eaebfb78f3f2078e73666b1415417a116cc848b72e5172e596c871103178 \
@@ -775,9 +775,9 @@ tomli==2.0.1 \
     #   documenteer
     #   mypy
     #   pytest
-types-cachetools==5.2.1 \
-    --hash=sha256:069cfc825697cd51445c1feabbe4edc1fae2b2315870e7a9a179a7c4a5851bee \
-    --hash=sha256:b496b7e364ba050c4eaadcc6582f2c9fbb04f8ee7141eb3b311a8589dbd4506a
+types-cachetools==5.3.0.0 \
+    --hash=sha256:cd20f3835b7bc008522e42c685ae02d708a34042f83a2638c0ab741b2b6c454f \
+    --hash=sha256:ed00554a55a66ae62a50f8c55f71b68d76c8f375d7b9c07480f629564b5c7fac
     # via -r requirements/dev.in
 typing-extensions==4.4.0 \
     --hash=sha256:1511434bb92bf8dd198c12b1cc812e800d4181cfcb867674e0f8279cc93087aa \
