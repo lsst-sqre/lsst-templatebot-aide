@@ -842,9 +842,9 @@ tomli==2.0.1 \
     #   documenteer
     #   mypy
     #   pytest
-types-cachetools==5.3.0.4 \
-    --hash=sha256:611b8c11c4a8df39bef25db1ae41d9c48517d0f5fa0fa1d46c62f3bb677309e7 \
-    --hash=sha256:9734ae93fe7fcf42693808bae643ae537a005c39d298718069393e6326f58184
+types-cachetools==5.3.0.5 \
+    --hash=sha256:67fa46d51a650896770aee0ba80f0e61dc4a7d1373198eec1bc0622263eaa256 \
+    --hash=sha256:c0c5fa00199017d974c935bf043c467d5204e4f835141e489b48765b5ac1d960
     # via -r requirements/dev.in
 typing-extensions==4.5.0 \
     --hash=sha256:5cb5f4a79139d699607b3ef622a1dedafa84e115ab0024e0d9c044a9479ca7cb \
