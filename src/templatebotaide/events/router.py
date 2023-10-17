@@ -25,6 +25,9 @@ TECHNOTE_TEMPLATES = (
     "technote_aastex",
     "technote_adasstex",
     "technote_spietex",
+    "technote_rst_early_adopter",
+    "technote_md_early_adopter",
+    "technote_ipynb_early_adopter",
 )
 """Names of templates in https://github.com/lsst/templates that correspond to
 technical notes.
