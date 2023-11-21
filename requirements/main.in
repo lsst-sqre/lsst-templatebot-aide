@@ -19,3 +19,5 @@ cachetools
 pycryptodomex
 ruamel.yaml
 GitPython
+pydantic
+PyYAML

@@ -11,6 +11,7 @@ from templatebotaide.events.handlers.utilities import clean_string_whitespace
 from templatebotaide.github import create_repo
 from templatebotaide.lsstthedocs import register_ltd_product
 from templatebotaide.slack import get_user_info, post_message
+from templatebotaide.storage.authordb import AuthorDb
 
 __all__ = ["handle_technote_prerender"]
 
@@ -171,6 +172,29 @@ async def handle_technote_prerender(
     render_ready_message["retry_count"] = 0
     now = datetime.datetime.now(datetime.timezone.utc)
     render_ready_message["initial_timestamp"] = now
+    if "author_id" in event["variables"]:
+        # Look up author from lsst/lsst-texmf's authordb.yaml
+        authordb = await AuthorDb.download()
+        author_info = authordb.get_author(event["variables"]["author_id"])
+        # Fill in fields
+        render_ready_message["variables"][
+            "first_author_given"
+        ] = author_info.given_name
+        render_ready_message["variables"][
+            "first_author_family"
+        ] = author_info.family_name
+        render_ready_message["variables"][
+            "first_author_orcid"
+        ] = author_info.orcid
+        render_ready_message["variables"][
+            "first_author_affil_name"
+        ] = author_info.affiliation_name
+        render_ready_message["variables"][
+            "first_author_affil_internal_id"
+        ] = author_info.affiliation_id
+        render_ready_message["variables"][
+            "first_author_affil_address"
+        ] = author_info.affiliation_address
 
     serializer = app["templatebot-aide/renderreadySerializer"]
     render_ready_data = serializer(render_ready_message)
