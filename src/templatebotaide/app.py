@@ -33,7 +33,8 @@ def create_app() -> web.Application:
     )
 
     root_app = web.Application()
-    root_app.update(config)
+    for key, value in config.items():
+        root_app[key] = value
     root_app.add_routes(init_root_routes())
     root_app.cleanup_ctx.append(init_http_session)
     root_app.cleanup_ctx.append(init_gidgethub_session)

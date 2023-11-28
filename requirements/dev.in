@@ -8,9 +8,9 @@
 -c main.txt
 
 aiohttp-devtools
-documenteer[pipelines]
 mypy
 pytest
 pytest-aiohttp
 pytest-coverage
 types-cachetools
+types-PyYAML
