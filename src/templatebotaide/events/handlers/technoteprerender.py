@@ -175,7 +175,27 @@ async def handle_technote_prerender(
     if "author_id" in event["variables"]:
         # Look up author from lsst/lsst-texmf's authordb.yaml
         authordb = await AuthorDb.download()
-        author_info = authordb.get_author(event["variables"]["author_id"])
+        try:
+            author_info = authordb.get_author(event["variables"]["author_id"])
+        except KeyError:
+            logger.exception(
+                "Failed to find author in authordb.yaml",
+                author_id=event["variables"]["author_id"],
+            )
+            author_id = event["variables"]["author_id"]
+            message = (
+                "Something went wrong getting your author information from "
+                "`authordb.yaml`. Check that your author ID is correct at "
+                f"http://ls.st/uyr and try again. You provided: `{author_id}`."
+            )
+            await post_message(
+                text=message,
+                channel=event["slack_channel"],
+                thread_ts=event["slack_thread_ts"],
+                logger=logger,
+                app=app,
+            )
+            raise
         # Fill in fields
         render_ready_message["variables"][
             "first_author_given"
