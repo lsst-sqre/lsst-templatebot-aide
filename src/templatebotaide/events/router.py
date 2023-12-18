@@ -21,6 +21,7 @@ __all__ = ["consume_events"]
 
 TECHNOTE_TEMPLATES = (
     "technote_rst",
+    "technote_md",
     "technote_latex",
     "technote_aastex",
     "technote_adasstex",
