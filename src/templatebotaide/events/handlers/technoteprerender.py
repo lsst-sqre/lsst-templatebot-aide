@@ -50,6 +50,57 @@ async def handle_technote_prerender(
         event["variables"]["title"]
     )
 
+    # This is the payload to send to the templatebot-render_ready topic.
+    # The render_ready message is based on the prerender payload, but now
+    # we can inject resolved variables
+    render_ready_message = deepcopy(event)
+
+    # Validate author_id early because it's easy to get wrong and we don't
+    # want to create a repo if we can't get the author information
+    if "author_id" in event["variables"]:
+        # Look up author from lsst/lsst-texmf's authordb.yaml
+        authordb = await AuthorDb.download()
+        try:
+            author_info = authordb.get_author(event["variables"]["author_id"])
+        except KeyError:
+            logger.exception(
+                "Failed to find author in authordb.yaml",
+                author_id=event["variables"]["author_id"],
+            )
+            author_id = event["variables"]["author_id"]
+            message = (
+                "Something went wrong getting your author information from "
+                "`authordb.yaml`. Check that your author ID is correct at "
+                f"http://ls.st/uyr and try again. You provided: `{author_id}`."
+            )
+            await post_message(
+                text=message,
+                channel=event["slack_channel"],
+                thread_ts=event["slack_thread_ts"],
+                logger=logger,
+                app=app,
+            )
+            raise
+        # Fill in fields
+        render_ready_message["variables"][
+            "first_author_given"
+        ] = author_info.given_name
+        render_ready_message["variables"][
+            "first_author_family"
+        ] = author_info.family_name
+        render_ready_message["variables"][
+            "first_author_orcid"
+        ] = author_info.orcid
+        render_ready_message["variables"][
+            "first_author_affil_name"
+        ] = author_info.affiliation_name
+        render_ready_message["variables"][
+            "first_author_affil_internal_id"
+        ] = author_info.affiliation_id
+        render_ready_message["variables"][
+            "first_author_affil_address"
+        ] = author_info.affiliation_address
+
     # Get data from the event (user dialog input)
     org_name = event["variables"]["github_org"]
     series = event["variables"]["series"].lower()
@@ -155,15 +206,13 @@ async def handle_technote_prerender(
                 app=app,
             )
 
+    # Add information to the render_ready message payload
+
     # Get the user's identity to use as the initial author
     user_info = await get_user_info(
         user=event["slack_username"], logger=logger, app=app
     )
 
-    # Send a response message to templatebot-render_ready
-    # The render_ready message is based on the prerender payload, but now
-    # we can inject resolved variables
-    render_ready_message = deepcopy(event)
     render_ready_message["github_repo"] = repo_info["html_url"]
     render_ready_message["variables"]["serial_number"] = serial_number
     render_ready_message["variables"]["first_author"] = user_info["user"][
@@ -172,49 +221,6 @@ async def handle_technote_prerender(
     render_ready_message["retry_count"] = 0
     now = datetime.datetime.now(datetime.timezone.utc)
     render_ready_message["initial_timestamp"] = now
-    if "author_id" in event["variables"]:
-        # Look up author from lsst/lsst-texmf's authordb.yaml
-        authordb = await AuthorDb.download()
-        try:
-            author_info = authordb.get_author(event["variables"]["author_id"])
-        except KeyError:
-            logger.exception(
-                "Failed to find author in authordb.yaml",
-                author_id=event["variables"]["author_id"],
-            )
-            author_id = event["variables"]["author_id"]
-            message = (
-                "Something went wrong getting your author information from "
-                "`authordb.yaml`. Check that your author ID is correct at "
-                f"http://ls.st/uyr and try again. You provided: `{author_id}`."
-            )
-            await post_message(
-                text=message,
-                channel=event["slack_channel"],
-                thread_ts=event["slack_thread_ts"],
-                logger=logger,
-                app=app,
-            )
-            raise
-        # Fill in fields
-        render_ready_message["variables"][
-            "first_author_given"
-        ] = author_info.given_name
-        render_ready_message["variables"][
-            "first_author_family"
-        ] = author_info.family_name
-        render_ready_message["variables"][
-            "first_author_orcid"
-        ] = author_info.orcid
-        render_ready_message["variables"][
-            "first_author_affil_name"
-        ] = author_info.affiliation_name
-        render_ready_message["variables"][
-            "first_author_affil_internal_id"
-        ] = author_info.affiliation_id
-        render_ready_message["variables"][
-            "first_author_affil_address"
-        ] = author_info.affiliation_address
 
     serializer = app["templatebot-aide/renderreadySerializer"]
     render_ready_data = serializer(render_ready_message)
