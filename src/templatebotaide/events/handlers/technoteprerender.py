@@ -80,6 +80,7 @@ async def handle_technote_prerender(
                 logger=logger,
                 app=app,
             )
+            await print_input(event, logger, app)
             raise
         # Fill in fields
         render_ready_message["variables"][
@@ -168,6 +169,7 @@ async def handle_technote_prerender(
                 logger=logger,
                 app=app,
             )
+            await print_input(event, logger, app)
         raise
 
     logger.info("Created repo", repo_info=repo_info)
@@ -205,6 +207,7 @@ async def handle_technote_prerender(
                 logger=logger,
                 app=app,
             )
+            await print_input(event, logger, app)
 
     # Add information to the render_ready message payload
 
@@ -259,3 +262,22 @@ def propose_number(series_numbers: List[int]) -> int:
             return serial_number + 1
 
     raise RuntimeError("propose_number should not be in this state.")
+
+
+async def print_input(
+    event: Dict[str, Any], logger: BoundLogger, app: Application
+) -> None:
+    """Print the user input to Slack."""
+    message = (
+        "Here's what you sent me:\n\n"
+        "```\n"
+        f"{event['variables']}\n"
+        "```\n\n"
+    )
+    await post_message(
+        text=message,
+        channel=event["slack_channel"],
+        thread_ts=event["slack_thread_ts"],
+        logger=logger,
+        app=app,
+    )
