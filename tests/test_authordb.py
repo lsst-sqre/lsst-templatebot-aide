@@ -27,6 +27,6 @@ def test_from_yaml(author_db_yaml: str) -> None:
     assert author.author_id == "sickj"
     assert (
         author.affiliation_address
-        == "950 N. Cherry Ave., Tucson, AZ  85719, USA"
+        == "950 N. Cherry Ave., Tucson, AZ 85719, USA"
     )
     assert author.affiliation_name == "Rubin Observatory Project Office"

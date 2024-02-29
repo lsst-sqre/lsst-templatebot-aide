@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from typing import Dict
 
 import aiohttp
 import yaml
 from pydantic import BaseModel, Field, RootModel
+from pylatexenc.latex2text import LatexNodes2Text
 
 
 class AuthorDbAuthor(BaseModel):
@@ -94,17 +96,15 @@ class AuthorInfo:
             affiliation_id = ""
             affiliation_name = ""
             affiliation_address = ""
-        # Remove common LaTeX encodings
-        affiliation_address = affiliation_address.replace(r".\ ", ". ")
 
         return cls(
             author_id=author_id,
-            given_name=db_author.initials,
-            family_name=db_author.name,
+            given_name=Latex(db_author.initials).to_text(),
+            family_name=Latex(db_author.name).to_text(),
             orcid=orcid,
-            affiliation_name=affiliation_name,
+            affiliation_name=Latex(affiliation_name).to_text(),
             affiliation_id=affiliation_id,
-            affiliation_address=affiliation_address,
+            affiliation_address=Latex(affiliation_address).to_text(),
         )
 
 
@@ -141,3 +141,16 @@ class AuthorDb:
             k: self._data.affiliations[k] for k in db_author.affil
         }
         return AuthorInfo.create_from_db(author_id, db_author, db_affiliations)
+
+
+class Latex:
+    """A class for handling LaTeX text content."""
+
+    def __init__(self, tex: str) -> None:
+        self.tex = tex
+
+    def to_text(self) -> str:
+        """Convert LaTeX to text."""
+        text = LatexNodes2Text().latex_to_text(self.tex.strip())
+        # Remove running spaces inside the content
+        return re.sub(" +", " ", text)
