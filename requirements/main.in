@@ -21,3 +21,4 @@ ruamel.yaml
 GitPython
 pydantic
 PyYAML
+pylatexenc
